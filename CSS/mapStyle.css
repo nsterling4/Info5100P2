@@ -1,0 +1,38 @@
+
+
+.state {
+    fill: lightgrey;
+    stroke: none;
+  }
+
+  .outline {
+    stroke: black;
+    stroke-width: 1px;
+    fill: none;
+  }
+
+  div.tooltip {
+    position: absolute;
+    text-align: center;
+    padding: 4px;
+    width: 120px;
+    height: 30px;
+    font: 12px sans-serif;
+    background: #f6fbfc;
+    border: 1px solid grey;
+    border-radius: 3px;
+    pointer-events: none;
+  }
+
+  /* .hoverBox {
+    position: absolute;
+    text-align: center;
+    padding: 4px;
+    width: 120px;
+    height: 30px;
+    font: 12px sans-serif;
+    background: #f6fbfc;
+    border: 1px solid grey;
+    border-radius: 3px;
+    pointer-events: none;
+  } */
