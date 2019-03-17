@@ -1,7 +1,3 @@
-
-
-
-
 let usaMap = d3.select("#usa");
 let svgMapWidth = usaMap.attr("width");
 let svgMapHeight = usaMap.attr("height");
@@ -37,20 +33,14 @@ const geoData = async () => {
     var path = d3.geoPath().projection(projection);
 
 
-       //let stateCounts = {};
-        let idToState = {};
-        stateIDs.forEach( row => {
-         // stateCounts[row.name] = 0;
-          idToState[row.id] = row.name;
-        });
-
 
     //Drawing portion
     map.selectAll("path").data(states.features)
         .enter()
         .append("path")
         .attr("class", "state")
-        .attr("d", path);
+        .attr("d", path)
+        .attr("ident", d => d.id);
 
 
     map.append("path")
@@ -60,19 +50,70 @@ const geoData = async () => {
 
 
 
+    const testdata = await d3.csv("Data/testdata.csv");
+
+    let idToState = {};
+    stateIDs.forEach(row => {
+        idToState[row.id] = row.name;
+    });
+    console.log(idToState);
+    console.log(testdata);
+
+    
+    // testdata.forEach( row => {
+    //   let splitRow = row.Boxes.split(", ");
+    //   splitRow.forEach( state => {
+    //     stateCounts[state] += 1;
+    //   });
+    // });
+    //console.log(stateCounts);
+
+
+    const minMax = d3.extent(testdata, d => d.Temp);
+    console.log(minMax);
+
+    console.log("HERE");
+
+    console.log(d3.values(idToState));
+    console.log(testdata);
+
+   // const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+
+   // const colorScale = d3.scaleSequential(d3.interpolateRdBu).domain(minMax);
+    const colorScale = d3.scaleQuantile()
+        .domain(d3.values(testdata.Temp))
+        .range(["#f6fbfc", "#adc2da", "#8879b3", "#762b80"]);
+    // const colorScale = d3.scaleQuantize()
+    //                       .domain(minMax)
+    //                       .range(["#f6fbfc","#adc2da","#8879b3","#762b80"]);
+
+                          
+    // let mapStates = map.selectAll(".state");
+    // console.log(mapStates);
+    // mapStates.forEach((d) => {
+    //     console.log(d3.this);
+    // });
+
+
+    map.selectAll(".state")
+        //.style("fill", "blue");
+        .style("fill", colorScale(200));
+
+
+        console.log("Test");
+        console.log(colorScale(d => d.Temp));
+        console.log( d => colorScale(d.Temp));
+        console.log(colorScale(20));
+        console.log(colorScale(30));
+        console.log(colorScale(40));
+        console.log(colorScale(1000));
 
 
 
-
-
-
-
-
-   // var hoverBox = usaMap.append("div")
-       // .attr("class", "hoverBox")
-       // .attr("opacity", 1)
-        //.style("background-color", "blue");
-   // hoverBox.append("div").text("kkkkkkkkk");    
+    // var hoverBox = d3.select("body").append("div")
+    // .attr("class", "hoverBox")
+    // .attr("opacity", 0)
+    // .style("background-color", "blue");
 
     // d3.selectAll(".state").on("mousemove", mouseOnPlot);
     // d3.selectAll(".state").on("mouseout", mouseLeavesPlot);
@@ -165,7 +206,7 @@ const geoData = async () => {
     // }
 
 
- 
+
 
 
 

@@ -24,7 +24,7 @@
     pointer-events: none;
   }
 
-  /* .hoverBox {
+  .hoverBox {
     position: absolute;
     text-align: center;
     padding: 4px;
@@ -35,4 +35,4 @@
     border: 1px solid grey;
     border-radius: 3px;
     pointer-events: none;
-  } */
+  }
