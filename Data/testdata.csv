@@ -1,4 +1,4 @@
-﻿State,Date,Avg Value,Avg Rank,Avg Mean,Avg Anomaly,Min Value,Min Rank,Min Mean,Min Anomaly,Max Value,Max Rank,Max Mean (1901-2000),Max Anomaly (1901-2000)
+﻿STATE,Date,AvgValue,AvgRank,AvgMean,AvgAnomaly,MinValue,MinRank,MinMean,MinAnomaly,MaxValue,MaxRank,MaxMean,MaxAnomaly
 Alabama,201812,49.2,90,46.4,2.8,40.1,112,35.4,4.7,58.2,72,57.4,0.8
 Arizona,201812,43.1,88,41.5,1.6,31,93,29,2,55.2,77,54,1.2
 Arkansas,201812,44.2,96,41.5,2.7,35.7,107,31.5,4.2,52.6,75,51.5,1.1

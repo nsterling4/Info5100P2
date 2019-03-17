@@ -19,7 +19,7 @@ const geoData = async () => {
 
     //Geo variables
     const usa = await d3.json("Data/us.json");
-    console.log(usa);
+   // console.log(usa);
 
     const stateIDs = await d3.tsv("Data/us-state-names.tsv");
     console.log(stateIDs);
@@ -42,6 +42,17 @@ const geoData = async () => {
         .attr("d", path)
         .attr("ident", d => d.id);
 
+    // if (d => d.attr("ident")=== 2){
+    //         d.remove();
+    // }    
+
+    // let statess = d3.selectAll(".state");
+    // statess.forEach(d=> {
+    //     if (d.attr("ident")=== 2){
+    //         d.remove();
+    //     }
+    // });
+
 
     map.append("path")
         .datum(statesMesh)
@@ -50,44 +61,68 @@ const geoData = async () => {
 
 
 
-    const testdata = await d3.csv("Data/testdata.csv");
+    let testdata = await d3.csv("Data/combinedWeather.csv", d3.autoType);
 
+    console.log(testdata);
+
+    let activeYear=2018;
+    let activeMonth=4;
+
+   // data = data.filter(d => d['Year'] === activeYear && d['Month'] === activeMonth);
+    testdata = testdata.filter(d => d['YEAR'] === activeYear && d['MONTH'] === activeMonth);
+    console.log(testdata);
+
+    let stateTemps = {};
     let idToState = {};
     stateIDs.forEach(row => {
+        stateTemps[row.name] = 0;
         idToState[row.id] = row.name;
     });
     console.log(idToState);
     console.log(testdata);
+    console.log(stateTemps);
 
     
-    // testdata.forEach( row => {
-    //   let splitRow = row.Boxes.split(", ");
-    //   splitRow.forEach( state => {
-    //     stateCounts[state] += 1;
-    //   });
-    // });
-    //console.log(stateCounts);
+    testdata.forEach( row => {
+        stateTemps[row.STATE] = row.AvgValue;
+    });
+    console.log(stateTemps);
 
 
-    const minMax = d3.extent(testdata, d => d.Temp);
+    const minMax = d3.extent(testdata, d => d.AvgValue);
     console.log(minMax);
 
-    console.log("HERE");
+   // console.log("HERE");
 
-    console.log(d3.values(idToState));
-    console.log(testdata);
+  //  console.log(d3.values(idToState));
+  //  console.log(testdata);
 
+
+//   let colorScale = d3.scaleLinear()
+//   .domain(minMax)
+//   .range(["blue", "red"])
+//   .clamp(true)
+//   .interpolate(d3.interpolateHcl);
+
+
+    
+//   map.selectAll(".state")
+//   .style("fill", d => colorScale(testdata.get(d.id)));
    // const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
-   // const colorScale = d3.scaleSequential(d3.interpolateRdBu).domain(minMax);
-    const colorScale = d3.scaleQuantile()
-        .domain(d3.values(testdata.Temp))
-        .range(["#f6fbfc", "#adc2da", "#8879b3", "#762b80"]);
-    // const colorScale = d3.scaleQuantize()
-    //                       .domain(minMax)
-    //                       .range(["#f6fbfc","#adc2da","#8879b3","#762b80"]);
 
-                          
+    //const colorScale = d3.scaleSequential(d3.interpolateRdBu).domain(minMax);
+    // const colorScale = d3.scaleQuantile()
+    //     .domain(d3.values(d3.values(stateTemps)))
+    //     .range(["blue", "lightblue","red"]);
+    const colorScale = d3.scaleQuantize()
+                          .domain(minMax)
+                          .range(["blue","lightblue","lightpink", "red"]);
+
+                  
+    map.selectAll(".state")
+    .style("fill", d => colorScale( stateTemps[ idToState[d.id] ] ));
+
     // let mapStates = map.selectAll(".state");
     // console.log(mapStates);
     // mapStates.forEach((d) => {
@@ -95,44 +130,48 @@ const geoData = async () => {
     // });
 
 
-    map.selectAll(".state")
-        //.style("fill", "blue");
-        .style("fill", colorScale(200));
+    // map.selectAll(".state")
+    //     //.style("fill", "blue");
+    //     .style("fill", colorScale(200));
 
 
-        console.log("Test");
-        console.log(colorScale(d => d.Temp));
-        console.log( d => colorScale(d.Temp));
-        console.log(colorScale(20));
-        console.log(colorScale(30));
-        console.log(colorScale(40));
-        console.log(colorScale(1000));
+        // console.log("Test");
+        // console.log(colorScale(d => d.Temp));
+        // console.log( d => colorScale(d.Temp));
+        // console.log(colorScale(20));
+        // console.log(colorScale(30));
+        // console.log(colorScale(40));
+        // console.log(colorScale(1000));
 
 
 
-    // var hoverBox = d3.select("body").append("div")
-    // .attr("class", "hoverBox")
-    // .attr("opacity", 0)
-    // .style("background-color", "blue");
+    var hoverBox = d3.select("body").append("div")
+    .attr("class", "hoverBox")
+    .style("opacity", 0)
+    //.style("background-color", "blue");
 
-    // d3.selectAll(".state").on("mousemove", mouseOnPlot);
-    // d3.selectAll(".state").on("mouseout", mouseLeavesPlot);
+    d3.selectAll(".state").on("mousemove", mouseOnPlot);
+    d3.selectAll(".state").on("mouseout", mouseLeavesPlot);
 
 
-    // function mouseOnPlot() {
-    //     console.log("move");
-    //     hoverBox.style("left", 50)
-    //         .style("top", 50)
-    //         .html("")
-    //         .attr("opacity", 1);
+    function mouseOnPlot() {
+       // console.log("move");
+        hoverBox.style("left", event.pageX)
+            .style("top", event.pageY)
+            .html("")
+            .style("opacity", 1);
 
-    //     let state = d3.select(this);
-    //     hoverBox.append("div").text(idToState[state.attr("ident")]);
-    // }
+        let state = d3.select(this);
+        hoverBox.append("div").text(idToState[state.attr("ident")]);
+        console.log("test");
+        console.log(testdata[0]);
+        //hoverBox.append("div").text( testdata.idToState[state.attr("ident")] );
+    }
 
-    // function mouseLeavesPlot() {
-    //     hoverBox.attr("opacity", 0);
-    // }
+    function mouseLeavesPlot() {
+        hoverBox.style("opacity", 0);
+       // console.log("Out");
+    }
 
     // console.log(map.selectAll("path"));
 
