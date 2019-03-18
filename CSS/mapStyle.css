@@ -11,12 +11,14 @@
     fill: none;
   }
 
-  div.tooltip {
+
+
+  .hoverBox {
     position: absolute;
     text-align: center;
     padding: 4px;
-    width: 120px;
-    height: 30px;
+    width: 140px;
+    height: 42px;
     font: 12px sans-serif;
     background: #f6fbfc;
     border: 1px solid grey;
@@ -24,15 +26,27 @@
     pointer-events: none;
   }
 
-  .hoverBox {
+  #usa {
+      background-color: aquamarine;
+  }
+
+  #usaMapLegend {
     position: absolute;
-    text-align: center;
-    padding: 4px;
-    width: 120px;
-    height: 30px;
-    font: 12px sans-serif;
-    background: #f6fbfc;
-    border: 1px solid grey;
-    border-radius: 3px;
-    pointer-events: none;
+    background: black;
+    padding: 20px 20px 10px 0px;
+    left: 20px;
+    top: 570px;
+  }
+
+  #usaMapLegend line {
+    stroke: white;
+  }
+
+  #usaMapLegend path {
+    stroke: white;
+  }
+
+  #usaMapLegend text {
+    fill: white;
+    font-size: 15px;
   }
