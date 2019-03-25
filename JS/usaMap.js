@@ -2,10 +2,10 @@ let usaMap = d3.select("#usa");
 let svgMapWidth = usaMap.attr("width");
 let svgMapHeight = usaMap.attr("height");
 let svgMapMargin = {
-    top: 0,
+    top: -80,
     right: 20,
     bottom: 0,
-    left: 0
+    left: -50
 };
 const mapWidth = svgMapWidth - svgMapMargin.left - svgMapMargin.right;
 const mapHeight = svgMapHeight - svgMapMargin.top - svgMapMargin.bottom;
@@ -119,7 +119,7 @@ const geoData = async () => {
             .domain(minMax)
            // .range(["navy", "blue", "lightblue", "lightpink", "red",d3.rgb(98,34,40)]);
             .range([d3.rgb(28,19,66), d3.rgb(46,63,111), d3.rgb(1,93,161), d3.rgb(57,159,220)
-                , d3.rgb(219,86,49), d3.rgb(200,45,40), d3.rgb(204,48,71), d3.rgb(98,34,40)]);
+                , d3.rgb(230,140,75), d3.rgb(219,86,49), d3.rgb(200,45,40), d3.rgb(98,34,40)]);
 
 
         map.selectAll(".state")
@@ -170,11 +170,22 @@ const geoData = async () => {
 
 
         //  Credit Prof. Rz. Adapted as needed
-        const legend = d3.select("#usaMapLegend");
-        const legendWidth = legend.attr("width");
-        const legendHeight = legend.attr("height");
+        const legendBox = d3.select("#usaMapLegend");
+        const legendBoxWidth = legendBox.attr("width");
+        const legendBoxHeight = legendBox.attr("height");
         const barHeight = 30;
-        const stepSize = 1;
+        const stepSize = 5;
+
+
+        let legendMargin = {
+            top: 40,
+            right: 10,
+            bottom: 20,
+            left: 10
+        };
+        const legendWidth = legendBoxWidth - legendMargin.left - legendMargin.right;
+        const legendHeight = legendBoxHeight - legendMargin.top - legendMargin.bottom;
+           
 
         const pixelScale = d3.scaleLinear()
             .domain([0, legendWidth])
@@ -184,17 +195,17 @@ const geoData = async () => {
             .range([0, legendWidth]);
         const barAxis = d3.axisBottom(barScale);
 
-        legend.html("");
+        legendBox.html("");
 
-        legend.append("g")
+        legendBox.append("g")
             .attr("class", "legendAxis")
             .style("stroke", "white")
             .style("stroke-width", ".5px")
-            .attr("transform", "translate(" + (20) + "," + (barHeight + 5) + ")")
+            .attr("transform", "translate(" + legendMargin.left + "," + legendMargin.top + ")")
             .call(barAxis);
 
         // Draw rects of color down the bar
-        let bar = legend.append("g").attr("transform", "translate(" + (20) + "," + (0) + ")")
+        let bar = legendBox.append("g").attr("transform", "translate(" + (10) + "," + (10) + ")")
         for (let i = 0; i < legendWidth; i = i + stepSize) {
             bar.append("rect")
                 .attr("x", i)
