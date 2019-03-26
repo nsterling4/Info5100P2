@@ -23,18 +23,40 @@ var energySource =[];
 d3.csv("Data/GenerationSimplified.csv").then( function(data) {
   typeData = data;
   // to check
-  // console.log(typeData);
+  console.log(typeData);
 
   // string -> number
-  data.forEach( (d,i) => {
-    d['GENERATION'] = Number(d['GENERATION'].replace(/,/g, ""));
+  typeData.forEach( (d,i) => {
+    d['YEAR'] = Number(d['YEAR']);
+    d['MONTH'] = Number(d['MONTH']);
+    d['GENERATION'] = Number(d['GENERATION'].replace(/,/g, ""))
+    d['ENERGY_SOURCE'] = (d['ENERGY_SOURCE']);;
   });
 
-  data = data.filter(d => d['GENERATION'] != NaN
+  typeData = data.filter(d => d['GENERATION'] != NaN
               && d['GENERATION'] != 0
               && d['GENERATION'].length != 0);
-// check filtered data
-console.log(data);
+  // check filtered data
+  console.log(typeData);
+
+  let activeYear = 2015;
+  let activeMonth = 4;
+  let activeState = "CA";
+  let activeSource;
+
+// filtering data
+  let activeData = typeData.filter(d => d['YEAR'] === activeYear
+    && d['MONTH'] === activeMonth
+    && d['ENERGY_SOURCE'] === activeSource
+    && d['STATE'] === activeState);
+  console.log(activeData); // need to figure out why it is empty
+
+  var year_month = activeData.filter(function(d) { return d.YEAR = activeYear; });
+  console.log(JSON.stringify(year_month));
+// data of active year
+  var byState = year_month.map(function(d) { return  [d['STATE'], d['YEAR'], d['MONTH'], d['ENERGY_SOURCE'] = energySource, d['GENERATION']]; });
+  var sourceByState = year_month.map(function(d) { return d['ENERGY_SOURCE']; });
+  var generationByState = year_month.map(function(d) { return d['GENERATION']; });
 
 //scales
   // y scale
@@ -44,13 +66,15 @@ console.log(data);
     .domain([mwMin, mwMax])
     .range([typeChartHeight, 20]);
     // check the data
-    console.log(mwMax);
-    console.log(mwMin);
+    //console.log(mwMax);
+    //console.log(mwMin); //have negative values
 
   // x scale
-  var typeScale = d3.scaleOrdinal()
-    .range([50, typeChartWidth])
-    .domain(data.map(function(d) { return d['ENERGY SOURCE']}));
+  var typeScale = d3.scaleBand()
+    .rangeRound([0, typeChartWidth])
+    .padding(0.4)
+//probably change typeData to activeData or year_month after figuring out why activeData is empty
+    .domain(typeData.map(function(d) {return d['ENERGY_SOURCE'];})); 
 
 // axis
   // y axis
@@ -87,14 +111,14 @@ console.log(data);
     .attr("transform", "rotate(-90)")
     .text("Generation(MWh)");
 
-
   //bar
-  // var bar = svgType.selectAll("g")
-  //     .data(data)
-  //   .enter().append("rect")
-  //     .attr("class", "bar")
-  //     .attr("x", function(d) { return d['ENERGY SOURCE']})
-  //     .attr("transform", function(d) { return "translate(" + x(d.TYPE_OF_PRODUCER) + ",0)"; });
+  var bar = svgType.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return typeScale(d.sourceByState); })
+      .attr("y", function(d) { return mwScale(d.generationByState); });
+      // .attr("transform", function(d) { return "translate(" +  + ",0)"; });
 });
 
 // Yearly Generation line chart
@@ -110,11 +134,26 @@ d3.csv("Data/GenerationSimplified.csv").then( function(data) {
     d['GENERATION'] = Number(d['GENERATION'].replace(/,/g, ""))
   });
 
-
-
   genData = data.filter(d => d['GENERATION'] != NaN
               && d['GENERATION'] != 0
               && d['GENERATION'].length != 0);
+
+  
+  let activeYear = 2015;
+  let activeMonth = 4;
+  let activeState = "CA";
+
+// filtering data
+  let activeData = genData.filter(d => d['YEAR'] === activeYear 
+    && d['STATE'] === activeState);
+  console.log(activeData);
+
+  var year_month = activeData.filter(function(d) { return d.YEAR = activeYear; });
+  console.log(JSON.stringify(year_month));
+
+// data of active year
+  var byState = year_month.map(function(d) { return {"state": d['STATE'], "year": d['YEAR'], "month": d['MONTH'], "generation": d['GENERATION'] }});
+  console.log(byState);
 
   const yearMin = d3.min(genData, d=>d['YEAR']);
   const yearMax = d3.max(genData, d=>d['YEAR']);
@@ -170,23 +209,18 @@ d3.csv("Data/GenerationSimplified.csv").then( function(data) {
     .attr("transform", "rotate(-90)")
     .text("Generation(MWh)");
 
-  // draw line
+// draw line
 
-  let activeYear = 2015;
-  let activeMonth = 4;
 
-  let activeData = genData.filter(d => d['YEAR'] === activeYear && d['MONTH'] === activeMonth);
-  console.log(activeData);
+  var line = d3.line()
+    .x(function(d, i) { return monthScale(i); })
+    .y(function(d) { return genScale(d.generation); });
 
-  var pathGenerator = d3.line()
-    .x(function(d) { return monthScale(d.activeData[MONTH]); })
-    .y(function(d) { return genScale(d.activeData[GENERATION]); });
-
-  var pathData = pathGenerator(activeData);
   svgGen.append("path")
-    .attr('d', pathData)
-    .attr('stroke', "red")
-    .attr('stroke-width','3px');
-  
+    .datum(byState)
+    .attr("class", "line")
+    .attr('d', line);
+
+
 
 });
