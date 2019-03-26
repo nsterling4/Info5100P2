@@ -31,7 +31,7 @@ d3.csv("Data/GenerationSimplified.csv").then( function(data) {
   });
 
   data = data.filter(d => d['GENERATION'] != NaN
-              && d['GENERATION'] != 0        
+              && d['GENERATION'] != 0
               && d['GENERATION'].length != 0);
 // check filtered data
 console.log(data);
@@ -66,7 +66,7 @@ console.log(data);
     .attr("class", "bottom axis")
     .attr("transform", "translate(50," + (typeChartHeight+30) + ")")
     .call(typeAxis);
-  
+
 // labels
   // x label
   svgType.append("text")
@@ -104,15 +104,23 @@ d3.csv("Data/GenerationSimplified.csv").then( function(data) {
   //to check
   console.log(genData);
 
-  data.forEach( (d,i) => {
+  genData.forEach( (d,i) => {
     d['YEAR'] = Number(d['YEAR'])
     d['MONTH'] = Number(d['MONTH'])
-    d['GENERATION'] = Number(d['GENERATION'].replace(/,/g, ""));
+    d['GENERATION'] = Number(d['GENERATION'].replace(/,/g, ""))
   });
 
-  data = data.filter(d => d['GENERATION'] != NaN
-              && d['GENERATION'] != 0        
+
+
+  genData = data.filter(d => d['GENERATION'] != NaN
+              && d['GENERATION'] != 0
               && d['GENERATION'].length != 0);
+
+  const yearMin = d3.min(genData, d=>d['YEAR']);
+  const yearMax = d3.max(genData, d=>d['YEAR']);
+  // console.log(yearMin);
+  // console.log(yearMax);
+
 
   //x month, y generation
   const monthMin = d3.min(genData, d=>d['MONTH']);
@@ -125,7 +133,7 @@ d3.csv("Data/GenerationSimplified.csv").then( function(data) {
   const genMin = d3.min(genData, d=>d['GENERATION']);
   const genMax = d3.max(genData, d=>d['GENERATION']);
   const genScale = d3.scaleLinear().domain([genMin, genMax]).range([genChartHeight, 0]);
-  
+
   // console.log(genMin);
   // console.log(genMax);
 
@@ -142,7 +150,7 @@ d3.csv("Data/GenerationSimplified.csv").then( function(data) {
     .attr("class", "bottom axis")
     .attr("transform", "translate(30," + (genChartHeight + 30) + ")")
     .call(monthAxis);
-  
+
   // x label
   svgGen.append("text")
     .attr("class", "x axis label")
@@ -161,6 +169,24 @@ d3.csv("Data/GenerationSimplified.csv").then( function(data) {
     .attr("text-anchor", "middle")
     .attr("transform", "rotate(-90)")
     .text("Generation(MWh)");
+
+  // draw line
+
+  let activeYear = 2015;
+  let activeMonth = 4;
+
+  let activeData = genData.filter(d => d['YEAR'] === activeYear && d['MONTH'] === activeMonth);
+  console.log(activeData);
+
+  var pathGenerator = d3.line()
+    .x(function(d) { return monthScale(d.activeData[MONTH]); })
+    .y(function(d) { return genScale(d.activeData[GENERATION]); });
+
+  var pathData = pathGenerator(activeData);
+  svgGen.append("path")
+    .attr('d', pathData)
+    .attr('stroke', "red")
+    .attr('stroke-width','3px');
   
-  
+
 });
