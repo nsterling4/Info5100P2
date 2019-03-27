@@ -218,20 +218,48 @@ const geoData = async () => {
     }
     //https://jeffrz.github.io/info3300-spr2019/notes/19.03.11.notes.htm
 
+    var years = [2013, 2014, 2015, 2016, 2017, 2018];
 
+    let default_year = 2013;
+    let default_month = 1;
 
-
-
-    //https://jeffrz.github.io/info3300-spr2019/notes/19.03.11.notes.htm
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-    let month = "January";
-    //geoData(2012, 1);
-    var slidersDiv = d3.select("#sliders").append("div").style("float", "right"); // Floats are dangerous!
+    var slidersDiv = d3.select("#sliders").append("div"); // Floats are dangerous!
 
     var month_text = document.getElementById("month");
 
-    month_text.innerHTML = month;
+    var dropdownDiv = d3.select("#dropdown").append("select");
+
+    var year_text = document.getElementById("year");
+   
+
+    var year_value = default_year;
+    var month_value = default_month;
+
+    year_text.innerHTML = year_value;
+    month_text.innerHTML = months[month_value-1];
+
+
+    years.forEach(function(d, i){
+        dropdownDiv.append("option")
+        .text(d)
+        .attr("value",d);
+
+    });
+
+    dropdownDiv.on("input", function(){
+        year_value = Number(this.value);
+        year_text.innerHTML = year_value;
+        updateMap(year_value, month_value);
+
+    });
+
+
+    //https://jeffrz.github.io/info3300-spr2019/notes/19.03.11.notes.htm
+    
+
+    
     slidersDiv.append("div").text("Month")
         .append("div").append("input")
         .attr("type", "range").attr("class", "slider")
@@ -244,14 +272,15 @@ const geoData = async () => {
             // Whenever the slider changes, update intercept and chart
             month = months[this.value];
             console.log(this.value);
+            month_value = Number(this.value)+1;
             month_text.innerHTML = month;
-            updateMap(2015, Number(this.value) + 1);
+            updateMap(year_value, month_value);
 
         });
 
 
 
-
+    updateMap(2013, 1);
 
 
 
