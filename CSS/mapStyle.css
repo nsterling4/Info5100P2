@@ -18,7 +18,7 @@
     text-align: center;
     padding: 4px;
     width: 140px;
-    height: 42px;
+    height: 60px;
     font: 12px sans-serif;
     background: #f6fbfc;
     border: 1px solid grey;
@@ -35,7 +35,7 @@
     background: black;
     padding: 0px 0px 10px 0px;
     left: 20px;
-    top: 600px;
+    top: 660px;
   }
 
   #usaMapLegend line {

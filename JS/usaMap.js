@@ -23,7 +23,7 @@ const geoData = async () => {
     // console.log(usa);
 
     const stateIDs = await d3.tsv("Data/us-state-names.tsv");
-    console.log(stateIDs);
+   // console.log(stateIDs);
 
 
 
@@ -44,8 +44,8 @@ const geoData = async () => {
         .attr("ident", d => d.id);
 
 
-    console.log("states");
-    console.log(d3.selectAll(".state"));
+    // console.log("states");
+    // console.log(d3.selectAll(".state"));
 
     let stateDrawings = d3.selectAll(".state");
     stateDrawings._groups[0][1].remove();
@@ -66,11 +66,48 @@ const geoData = async () => {
     //   let activeYear = 2015;
     //  let activeMonth = 4;
 
+    let display = "AvgValue"; 
+    let minButton = d3.select("button#MinValue");
+    let avgButton = d3.select("button#AvgValue");
+    let maxButton = d3.select("button#MaxValue");
+    let displayValue = d3.select("#displayValue");
+
+    let displayButton = d3.select("#"+display);
+    displayButton.attr("disabled","null");
+    displayValue.text("Displaying: "+displayButton.text());
+
+    minButton.on("click", function() {
+        setDisplayButton("MinValue");
+    });
+
+    avgButton.on("click", function() {
+        setDisplayButton("AvgValue");
+    });
+
+    maxButton.on("click", function() {
+        setDisplayButton("MaxValue");
+    });
+
+    function setDisplayButton(newDisplay) {
+        displayButton = d3.select("#"+display);
+        displayButton.attr("disabled",null);
+        display = newDisplay;
+        displayButton = d3.select("#"+display);
+        displayButton.attr("disabled","true");
+       // displayValue.text("Displaying: "+display);
+        displayValue.text("Displaying: "+displayButton.text());
+        updateMap(year_value, month_value);
+
+    }
+
 
     function updateMap(activeYear, activeMonth) {
         activeData = fulldata.filter(d => d['YEAR'] === activeYear && d['MONTH'] === activeMonth);
-        console.log("DATA")
+        console.log("DATA");
         console.log(activeData);
+
+
+
 
         let stateTemps = {};
         let idToState = {};
@@ -85,7 +122,7 @@ const geoData = async () => {
 
 
         activeData.forEach((row, i) => {
-            stateTemps[row.STATE] = row.AvgValue;
+            stateTemps[row.STATE] = row[display];
             stateToData[row.STATE] = i;
         });
         //console.log(stateTemps);
@@ -119,7 +156,7 @@ const geoData = async () => {
             .domain(minMax)
            // .range(["navy", "blue", "lightblue", "lightpink", "red",d3.rgb(98,34,40)]);
             .range([d3.rgb(28,19,66), d3.rgb(46,63,111), d3.rgb(1,93,161), d3.rgb(57,159,220)
-                , d3.rgb(230,140,75), d3.rgb(219,86,49), d3.rgb(200,45,40), d3.rgb(98,34,40)]);
+                , d3.rgb(230,140,75), d3.rgb(219,86,49), d3.rgb(168,39,35), d3.rgb(98,34,40)]);
 
 
         map.selectAll(".state")
@@ -148,8 +185,9 @@ const geoData = async () => {
             let state = d3.select(this);
             let dataRow = activeData[stateToData[idToState[state.attr("ident")]]];
             let degreeSymbol = String.fromCharCode(176);
-            hoverBox.append("div").text(idToState[state.attr("ident")] + " " + dataRow.AvgValue + degreeSymbol + degree);
+            hoverBox.append("div").text(idToState[state.attr("ident")]);
             hoverBox.append("div").text("Min Value " + dataRow.MinValue + degreeSymbol + degree);
+            hoverBox.append("div").text("Avg Value " + dataRow.AvgValue + degreeSymbol + degree);
             hoverBox.append("div").text("Max Value " + dataRow.MaxValue + degreeSymbol + degree);
 
         }

@@ -16,6 +16,12 @@
 <body>
     <h1 style="text-align: center;">Project 2</h1>
     <div>
+        <button type = "button" id= "MinValue" >Minimum Temperature</button>
+        <button type = "button" id = "AvgValue" disabled= "true">Average Temperature</button>
+        <button type = "button" id="MaxValue" >Maximum Temperature</button>
+    </div>
+    <p id="displayValue"></p>
+    <div>
         <svg id="usa" height="600" width="800" style="border:1px solid black"></svg>
         <svg id="usaMapLegend" height="60" width="450"></svg>
     </div>
@@ -27,7 +33,7 @@
 
   
     <script type = "text/javascript" src="JS/usaMap.js"></script>
-    <script type = "text/javascript" src="JS/graphs.js"></script>
+
 
 
 <!-- two graphs -->
@@ -38,6 +44,7 @@
     <h2> Line chart for Yearly Generation</h2>
     <svg id="yearlyGeneration" height="600" width="800" style="background: lightblue"></svg>
   </div>
+  <script type = "text/javascript" src="JS/graphs.js"></script>
 </body>
 
 </html>
