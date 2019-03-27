@@ -255,10 +255,6 @@ const geoData = async () => {
 
     });
 
-
-    //https://jeffrz.github.io/info3300-spr2019/notes/19.03.11.notes.htm
-    
-
     
     slidersDiv.append("div").text("Month")
         .append("div").append("input")
@@ -269,7 +265,6 @@ const geoData = async () => {
         .attr("max", 11)
         .attr("value", 0)
         .on("input", function () {
-            // Whenever the slider changes, update intercept and chart
             month = months[this.value];
             console.log(this.value);
             month_value = Number(this.value)+1;
@@ -280,7 +275,7 @@ const geoData = async () => {
 
 
 
-    updateMap(2013, 1);
+    updateMap(default_year, default_month);
 
 
 
