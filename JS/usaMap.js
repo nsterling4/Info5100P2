@@ -103,8 +103,8 @@ const geoData = async () => {
 
     function updateMap(activeYear, activeMonth) {
         activeData = fulldata.filter(d => d['YEAR'] === activeYear && d['MONTH'] === activeMonth);
-        console.log("DATA");
-        console.log(activeData);
+       // console.log("DATA");
+       // console.log(activeData);
 
 
 
