@@ -355,16 +355,18 @@ const geoData = async () => {
 
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-    var slidersDiv = d3.select("#sliders").append("div"); // Floats are dangerous!
+    var slidersDiv = d3.select("#sliders").append("div"); 
 
     var month_text = document.getElementById("month");
 
     var dropdownDiv = d3.select("#dropdown").append("select");
 
+  //  var slidersDiv = d3.select("#sliders").append("input");
+
     var year_text = document.getElementById("year");
 
     // var state_text = document.getElementById("state");
-
+    //slidersDiv.attr("type", "range").style("width", "600px");
 
     year_value = default_year;
     month_value = default_month;
@@ -373,7 +375,7 @@ const geoData = async () => {
     month_text.innerHTML = months[month_value - 1];
 
 
-
+   
     years.forEach(function (d, i) {
         dropdownDiv.append("option")
             .text(d)
@@ -389,12 +391,23 @@ const geoData = async () => {
 
     });
 
+/*
+    months.forEach(function(d, i){
+        slidersDiv.append("option")
+            .attr("label", d[i])
+            .attr("value", d);
+
+    });
+
+*/
 
     slidersDiv.append("div").text("Month")
         .append("div").append("input")
-        .attr("type", "range").attr("class", "slider")
+        .attr("type", "range")
+        .attr("class", "slider")
         .attr("id", "month")
-        .style("width", "300px")
+        .style("width", "660px")
+        .style("margin", "5px 25px 0")
         .attr("min", 0)
         .attr("max", 11)
         .attr("value", 0)
@@ -407,6 +420,8 @@ const geoData = async () => {
             updateGraphs(year_value, month_value);
 
         });
+
+
 
 
 
