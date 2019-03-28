@@ -5,13 +5,32 @@
     stroke: none;
   }
 
-  .outline {
-    stroke: black;
-    stroke-width: 1px;
-    fill: none;
+.outline {
+  stroke: black;
+  stroke-width: 1px;
+  fill: none;
+}
+
+
+.slider-labels{
+  margin: 0px -41px 0;
+  padding: 0px 0px 0px 40px;
+  list-style: none;
+
   }
 
+  .slider-labels li{
 
+    position: relative fixed;
+
+    float: left;
+    width: 59px;
+    text-align: center;
+    color: #000000;
+    font-size: 10px;
+    
+
+  }
 
   .hoverBox {
     position: absolute;
