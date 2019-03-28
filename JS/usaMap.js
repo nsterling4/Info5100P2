@@ -263,7 +263,7 @@ const geoData = async () => {
                 prevState.attr("opacity", 1);
                 prevState = state;
             } else {
-                state.attr("opacity", .7);
+                if (state !== activeState) state.attr("opacity", .7);
             }
 
         }
