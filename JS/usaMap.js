@@ -411,7 +411,7 @@ const geoData = async () => {
 
 
     updateMap(default_year, default_month);
-    //updateGraphs(default_year, default_month);
+
 
 
 
@@ -479,6 +479,7 @@ const geoData = async () => {
         svgGen.selectAll("path.line").remove();
         svgType.selectAll("text").remove();
         svgType.selectAll("g").remove();
+        svgType.selectAll(".bar").remove();
 
         svgGen.selectAll("text").remove();
         svgGen.selectAll("g").remove();
@@ -527,13 +528,14 @@ const geoData = async () => {
 
             //x scale
             var typeScale = d3.scaleBand()
-                .rangeRound([0, typeChartWidth - 50])
+                .rangeRound([margin.left, typeChartWidth - 50])
                 .padding(0.4)
                 .domain(activeDataBar.map(function (d) {
                     return d['ENERGY_SOURCE'];
                 }));
 
-
+            console.log(typeScale);
+            var colorScale = d3.scaleOrdinal().range(d3.schemeCategory10)
             // axis
             // y axis
             var mwAxis = d3.axisLeft(mwScale);
@@ -570,16 +572,21 @@ const geoData = async () => {
                 .text("Generation(MWh)");
 
             //bar
+
+            var xAxisOffsetBar =  125; //Not sure how to calculate given our variables and parameters
             var bar = svgType.selectAll(".bar")
                 .data(activeDataBar)
                 .enter().append("rect")
                 .attr("class", "bar")
                 .attr("x", function (d) {
-                    return typeScale(d.ENERGY_SOURCE);
+                    return typeScale(d.ENERGY_SOURCE) + xAxisOffsetBar;
                 })
                 .attr("y", function (d) {
                     return mwScale(d.GENERATION);
-                });
+                })
+                .attr("fill", function (d) {return colorScale(d.ENERGY_SOURCE);})
+                .attr("width", 30)
+                .attr("height", function(d) { return typeChartHeight + 30 - mwScale(d.GENERATION) });
             // .attr("transform", function(d) { return "translate(" +  + ",0)"; });
 
 
@@ -647,11 +654,11 @@ const geoData = async () => {
                 .text("Generation(MWh)");
 
             // draw line
-            var xAxisOffset =  162; //Not sure how to calculate given our variables and parameters
+            var xAxisOffsetLine =  162; //Not sure how to calculate given our variables and parameters
             console.log(svgGenWidth);
             var line = d3.line()
                 .x(function (d, i) {
-                    return monthScale(i) + xAxisOffset;
+                    return monthScale(i) + xAxisOffsetLine;
                 })
                 .y(function (d) {
                     return genScale(d.GENERATION);
