@@ -33,13 +33,7 @@ d3.csv("Data/CombinedEnergy.csv").then( function(data) {
   let activeSource;
 
 // filtering data
-  fullGraphData.forEach( (d,i) => {
-    d['YEAR'] = Number(d['YEAR']);
-    d['MONTH'] = Number(d['MONTH']);
-    d['GENERATION'] = Number(d['GENERATION'].replace(/,/g, ""));
-    d['CONSUMPTION'] = Number(d['CONSUMPTION'].replace(/,/g, ""));
-  });
-  // console.log(fullGraphData);
+  console.log(fullGraphData);
 
   var activeData = fullGraphData.filter(d => d['GENERATION'] != NaN
               && d['GENERATION'] > 0        
