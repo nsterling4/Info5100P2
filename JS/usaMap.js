@@ -270,6 +270,7 @@ const geoData = async () => {
 
         function mouseLeavesPlot() {
             hoverBox.style("opacity", 0);
+            if (prevState !== undefined) prevState.attr("opacity", 1);
         }
 
         function overlay() {
