@@ -2,10 +2,10 @@ let usaMap = d3.select("#usa");
 let svgMapWidth = usaMap.attr("width");
 let svgMapHeight = usaMap.attr("height");
 let svgMapMargin = {
-    top: -80,
+    top: -40,
     right: 20,
-    bottom: 0,
-    left: -50
+    bottom: 30,
+    left: 20
 };
 const mapWidth = svgMapWidth - svgMapMargin.left - svgMapMargin.right;
 const mapHeight = svgMapHeight - svgMapMargin.top - svgMapMargin.bottom;
@@ -28,6 +28,15 @@ const geoData = async () => {
 
 
 
+    // Let's filter the dataset so we have only the lower 48 states
+    let filteredStates = ['02','15','60','66','69','72','74','78'];
+    // Loop through state geometries and filter by id (padding with leading zeroes because they are stored as ints in the json)
+    usa.objects.states.geometries = usa.objects.states.geometries.filter( d => {
+                          return filteredStates.indexOf( d.id.toString().padStart(2,'0')  ) === -1;
+                        });
+
+
+
     var states = topojson.feature(usa, usa.objects.states);
     var statesMesh = topojson.mesh(usa, usa.objects.states);
     var projection = d3.geoAlbersUsa().fitSize([mapWidth, mapHeight], states);
@@ -44,12 +53,6 @@ const geoData = async () => {
         .attr("ident", d => d.id);
 
 
-    // console.log("states");
-    // console.log(d3.selectAll(".state"));
-
-    let stateDrawings = d3.selectAll(".state");
-    stateDrawings._groups[0][1].remove();
-    stateDrawings._groups[0][11].remove();
 
 
     map.append("path")
@@ -65,6 +68,8 @@ const geoData = async () => {
 
     //   let activeYear = 2015;
     //  let activeMonth = 4;
+    
+    var activeState;
 
     let display = "AvgValue"; 
     let minButton = d3.select("button#MinValue");
@@ -89,6 +94,8 @@ const geoData = async () => {
     });
 
     function setDisplayButton(newDisplay) {
+        activeState = undefined;
+        d3.select("h2#state").text("");
         displayButton = d3.select("#"+display);
         displayButton.attr("disabled",null);
         display = newDisplay;
@@ -99,6 +106,11 @@ const geoData = async () => {
         updateMap(year_value, month_value);
 
     }
+
+
+    var hoverBox = d3.select("body").append("div")
+    .attr("class", "hoverBox")
+    .style("opacity", 0)
 
 
     function updateMap(activeYear, activeMonth) {
@@ -132,8 +144,8 @@ const geoData = async () => {
 
 
         const minMax = d3.extent(fulldata, d => d.AvgValue);
-        console.log("MinMax");
-        console.log(minMax);
+       // console.log("MinMax");
+       // console.log(minMax);
 
 
 
@@ -155,25 +167,38 @@ const geoData = async () => {
         const colorScale = d3.scaleQuantize()
             .domain(minMax)
            // .range(["navy", "blue", "lightblue", "lightpink", "red",d3.rgb(98,34,40)]);
-            .range([d3.rgb(28,19,66), d3.rgb(46,63,111), d3.rgb(1,93,161), d3.rgb(57,159,220)
+            .range([d3.rgb(31,21,62), d3.rgb(46,63,111), d3.rgb(1,93,161), d3.rgb(57,159,220)
                 , d3.rgb(230,140,75), d3.rgb(219,86,49), d3.rgb(168,39,35), d3.rgb(98,34,40)]);
 
 
         map.selectAll(".state")
             .style("fill", d => colorScale(stateTemps[idToState[d.id]]));
 
+        console.log("activeState");    
+       // console.log(activeState);   
+        if (activeState !== undefined) {
+            activeState.style("fill","white");
+            console.log(idToState[activeState.attr("ident")]);
+        }
 
-        var hoverBox = d3.select("body").append("div")
-            .attr("class", "hoverBox")
-            .style("opacity", 0)
 
-        d3.selectAll(".state").on("mousemove", mouseOnPlot);
-        d3.selectAll(".state").on("mouseout", mouseLeavesPlot);
-        d3.selectAll(".outline").on("mouseover", overlay);
-        d3.selectAll(".outline").on("mouseout", mouseLeavesPlot);
+        d3.selectAll(".state").on("mousemove", mouseOnPlot)
+                                .on("mouseout", mouseLeavesPlot)
+                                .on("click", mouseClickPlot);
+        d3.selectAll(".outline").on("mouseover", overlay)
+                                .on("mouseout", mouseLeavesPlot);
 
         var hoveBoxWidth = parseFloat(hoverBox.style("width"));
         var hoverBoxHeight = parseFloat(hoverBox.style("height"));
+
+        function mouseClickPlot(){
+            activeState=undefined;
+            updateMap(year_value, month_value);
+            activeState = d3.select(this);
+            activeState.style("fill","white");
+            console.log(idToState[activeState.attr("ident")]);
+            d3.select("h2#state").text(idToState[activeState.attr("ident")]);
+        }
 
         function mouseOnPlot() {
             hoverBox.style("left", event.pageX - (hoveBoxWidth / 2) + "px")
@@ -256,6 +281,7 @@ const geoData = async () => {
     }
     //https://jeffrz.github.io/info3300-spr2019/notes/19.03.11.notes.htm
 
+
     var years = [2013, 2014, 2015, 2016, 2017, 2018];
 
     let default_year = 2013;
@@ -270,6 +296,8 @@ const geoData = async () => {
     var dropdownDiv = d3.select("#dropdown").append("select");
 
     var year_text = document.getElementById("year");
+
+    // var state_text = document.getElementById("state");
    
 
     var year_value = default_year;
@@ -304,7 +332,7 @@ const geoData = async () => {
         .attr("value", 0)
         .on("input", function () {
             month = months[this.value];
-            console.log(this.value);
+           // console.log(this.value);
             month_value = Number(this.value)+1;
             month_text.innerHTML = month;
             updateMap(year_value, month_value);
