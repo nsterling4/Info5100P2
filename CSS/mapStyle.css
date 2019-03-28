@@ -22,12 +22,13 @@
     font: 12px sans-serif;
     background: honeydew;
     border: 1px solid grey;
-    border-radius: 3px;
+    border-radius: 10px;
     pointer-events: none;
   }
 
   #usa {
       background-color: aquamarine;
+      float: left;
   }
 
   #usaMapLegend {
@@ -35,7 +36,7 @@
     background: honeydew;
     padding: 0px 0px 10px 0px;
     left: 15px;
-    top: 670px;
+    top: 500px;
   }
 
   /* #usaMapLegend line {
@@ -48,6 +49,14 @@
 
   #usaMapLegend text {
     /* fill: white; */
-    font-size: 15px;
+    font-size: 14px;
     stroke: black;
+  }
+
+  #producerType {
+    float: left;
+  }
+
+  #yearlyGeneration {
+    float: right;
   }

@@ -2,53 +2,60 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <title>5100Project2</title>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
-    <script src="https://d3js.org/topojson.v2.min.js"></script>
- 
+  <meta charset="utf-8">
+  <title>5100Project2</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://d3js.org/topojson.v2.min.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="CSS/mapStyle.css">
-    <link rel="stylesheet" type="text/css" href="CSS/graphStyle.css">
+
+  <link rel="stylesheet" type="text/css" href="CSS/mapStyle.css">
+  <link rel="stylesheet" type="text/css" href="CSS/graphStyle.css">
 </head>
 
 
 
 <body>
-    <h1 style="text-align: center;">Project 2</h1>
-    <div>
-        <button type = "button" id= "MinValue" >Minimum Temperature</button>
-        <button type = "button" id = "AvgValue" disabled= "true">Average Temperature</button>
-        <button type = "button" id="MaxValue" >Maximum Temperature</button>
-        <button type = "button" id="F" disabled= "true">Fahrenheit</button>
-        <button type = "button" id="C" >Centigrade</button>
-    </div>
-    <p id="displayValue"></p>
-    <div>
-        <svg id="usa" height="600" width="800" style="border:1px solid black"></svg>
-        <svg id="usaMapLegend" height="60" width="450"></svg>
-    </div>
-    <div id="sliders"></div>
-    <div id="dropdown"></div>
-    <h2 id="month"></h2>
-    <h2 id="year"></h2>
-    <h2 id="state"></h2>
-
-
-  
-   
-
-
-
-<!-- two graphs -->
+  <!-- <h1 style="text-align: center;">Project 2</h1> -->
   <div>
-    <h2> Bar chart for type of producer</h2>
-    <svg id="producerType" height="600" width="1200" style="background: lightgray"></svg>
-   
-    <h2> Line chart for Yearly Generation</h2>
-    <svg id="yearlyGeneration" height="600" width="800" style="background: lightblue"></svg>
+    <button type="button" id="MinValue">Minimum Temperature</button>
+    <button type="button" id="AvgValue" disabled="true">Average Temperature</button>
+    <button type="button" id="MaxValue">Maximum Temperature</button>
+    <button type="button" id="F" disabled="true">Fahrenheit</button>
+    <button type="button" id="C">Centigrade</button>
   </div>
-  <script type = "text/javascript" src="JS/usaMap.js"></script>
+  <p id="displayValue"></p>
+  <h2 id="month"></h2>
+  <h2 id="year"></h2>
+  <h2 id="state"></h2>
+  <div>
+    <svg id="usa" height="500" width="650" style="border:1px solid black"></svg>
+    <svg id="usaMapLegend" height="60" width="450"></svg>
+
+    <!-- <h2> Line chart for Yearly Generation</h2> -->
+    <svg id="yearlyGeneration" height="400" width="700" style="background: lightblue"></svg>
+
+  </div>
+
+
+
+  <div id="sliders"></div>
+  <div id="dropdown"></div>
+
+
+
+
+
+
+
+
+  <!-- two graphs -->
+  <div>
+
+    <h2> Bar chart for type of producer</h2>
+    <svg id="producerType" height="400" width="900" style="background: lightgray"></svg>
+
+  </div>
+  <script type="text/javascript" src="JS/usaMap.js"></script>
   <!-- <script type = "text/javascript" src="JS/graphs.js"></script> -->
 </body>
 

@@ -2,7 +2,7 @@ let usaMap = d3.select("#usa");
 let svgMapWidth = usaMap.attr("width");
 let svgMapHeight = usaMap.attr("height");
 let svgMapMargin = {
-    top: -40,
+    top: -30,
     right: 20,
     bottom: 30,
     left: 20
@@ -125,6 +125,7 @@ const geoData = async () => {
         // displayValue.text("Displaying: "+display);
         displayValue.text("Displaying: " + displayButton.text());
         updateMap(year_value, month_value);
+        clearGraphs();
     }
 
     function setUint() {
@@ -292,7 +293,7 @@ const geoData = async () => {
         const legendBox = d3.select("#usaMapLegend");
         const legendBoxWidth = legendBox.attr("width");
         const legendBoxHeight = legendBox.attr("height");
-        const barHeight = 30;
+        const barHeight = 25;
         const stepSize = 5;
 
 
@@ -348,9 +349,10 @@ const geoData = async () => {
     //https://jeffrz.github.io/info3300-spr2019/notes/19.03.11.notes.htm
 
 
-    var years = [2013, 2014, 2015, 2016, 2017, 2018];
+    var years = [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 
+        2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018];
 
-    let default_year = 2013;
+    let default_year = 2001;
     let default_month = 1;
 
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -447,9 +449,9 @@ const geoData = async () => {
     var svgTypeHeight = svgType.attr("height");
     var margin = {
         top: 20,
-        right: 20,
+        right: 0,
         bottom: 50,
-        left: 50
+        left: 60
     };
     var typeChartWidth = svgTypeWidth - margin.left - margin.right;
     var typeChartHeight = svgTypeHeight - margin.top - margin.bottom;
@@ -473,9 +475,7 @@ const geoData = async () => {
         d['GENERATION'] > 0 &&
         d['GENERATION'].length !== 0);
 
-
-    function updateGraphs(activeYear, activeMonth) {
-
+    function clearGraphs() {
         svgGen.selectAll("path.line").remove();
         svgType.selectAll("text").remove();
         svgType.selectAll("g").remove();
@@ -483,6 +483,12 @@ const geoData = async () => {
 
         svgGen.selectAll("text").remove();
         svgGen.selectAll("g").remove();
+    }    
+
+    function updateGraphs(activeYear, activeMonth) {
+        
+        clearGraphs();
+       
         if (activeState !== undefined) {
 
             // console.log("UPDATE");
@@ -510,7 +516,8 @@ const geoData = async () => {
             /*************/
 
 
-            var activeDataBar = activeData.filter(d => d['MONTH'] === activeMonth);
+            var activeDataBar = activeData.filter(d => d['MONTH'] === activeMonth
+            && d['ENERGY_SOURCE'] !== 'Total');
             // console.log(activeDataBar);
 
             //scales
@@ -528,27 +535,30 @@ const geoData = async () => {
 
             //x scale
             var typeScale = d3.scaleBand()
-                .rangeRound([margin.left, typeChartWidth - 50])
+                .rangeRound([margin.left, typeChartWidth+30])
                 .padding(0.4)
                 .domain(activeDataBar.map(function (d) {
                     return d['ENERGY_SOURCE'];
                 }));
 
-            console.log(typeScale);
+           
             var colorScale = d3.scaleOrdinal().range(d3.schemeCategory10)
             // axis
             // y axis
-            var mwAxis = d3.axisLeft(mwScale);
+            var p = d3.precisionPrefix(1e5, 1.3e6);
+            var f = d3.formatPrefix("." + p, 1.3e6);
+
+            var mwAxis = d3.axisLeft(mwScale).tickFormat(d => f(d).slice(0,-1));
             svgType.append("g")
                 .attr("class", "left axis")
-                .attr("transform", "translate(" + (margin.left + 50) + "," + (margin.top - 10) + ")")
+                .attr("transform", "translate(" + (margin.left) + "," + (margin.top - 10) + ")")
                 .call(mwAxis);
 
             // x axis
             var typeAxis = d3.axisBottom(typeScale);
             svgType.append("g")
                 .attr("class", "bottom axis")
-                .attr("transform", "translate(100," + (typeChartHeight + 30) + ")")
+                .attr("transform", "translate(5," + (typeChartHeight + 30) + ")")
                 .call(typeAxis);
 
             // labels
@@ -557,7 +567,7 @@ const geoData = async () => {
                 .attr("class", "x axis label")
                 .attr("x", svgTypeWidth / 2)
                 .attr("y", svgTypeHeight - 8)
-                .attr("font-size", "18px")
+                .attr("font-size", "14px")
                 .attr("text-anchor", "middle")
                 .text("Types of Source");
 
@@ -566,14 +576,14 @@ const geoData = async () => {
                 .attr("class", "y axis label")
                 .attr("x", -svgTypeHeight / 2)
                 .attr("y", 20)
-                .attr("font-size", "18px")
+                .attr("font-size", "14px")
                 .attr("text-anchor", "middle")
                 .attr("transform", "rotate(-90)")
                 .text("Generation(MWh)");
 
             //bar
 
-            var xAxisOffsetBar =  125; //Not sure how to calculate given our variables and parameters
+            var xAxisOffsetBar =  16; //Not sure how to calculate given our variables and parameters
             var bar = svgType.selectAll(".bar")
                 .data(activeDataBar)
                 .enter().append("rect")
@@ -621,17 +631,17 @@ const geoData = async () => {
             // console.log(genMax);
 
             // y axis
-            var genAxis = d3.axisLeft(genScale);
+            var genAxis = d3.axisLeft(genScale).tickFormat(d => f(d).slice(0,-1));
             svgGen.append("g")
                 .attr("class", "left axis")
-                .attr("transform", "translate(" + (margin.left + 50) + "," + margin.top + ")")
+                .attr("transform", "translate(" + (margin.left) + "," + margin.top + ")")
                 .call(genAxis);
 
             // x axis
             var monthAxis = d3.axisBottom(monthScale);
             svgGen.append("g")
                 .attr("class", "bottom axis")
-                .attr("transform", "translate(100," + (genChartHeight + 30) + ")")
+                .attr("transform", "translate(80," + (genChartHeight + 30) + ")")
                 .call(monthAxis);
 
             // x label
@@ -654,8 +664,8 @@ const geoData = async () => {
                 .text("Generation(MWh)");
 
             // draw line
-            var xAxisOffsetLine =  162; //Not sure how to calculate given our variables and parameters
-            console.log(svgGenWidth);
+            var xAxisOffsetLine =  135; //Not sure how to calculate given our variables and parameters
+           // console.log(svgGenWidth);
             var line = d3.line()
                 .x(function (d, i) {
                     return monthScale(i) + xAxisOffsetLine;
