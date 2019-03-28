@@ -471,6 +471,8 @@ const geoData = async () => {
 
 
     function updateGraphs(activeYear, activeMonth) {
+
+        d3.selectAll("path.line").remove();
         if (activeState !== undefined) {
 
             // console.log("UPDATE");
