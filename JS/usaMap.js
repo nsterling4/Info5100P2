@@ -85,6 +85,9 @@ const geoData = async () => {
     let maxButton = d3.select("button#MaxValue");
     let displayValue = d3.select("#displayValue");
 
+    let f = d3.select("button#F");
+    let c = d3.select("button#C");
+
     let displayButton = d3.select("#" + display);
     displayButton.attr("disabled", "null");
     displayValue.text("Displaying: " + displayButton.text());
@@ -101,6 +104,16 @@ const geoData = async () => {
         setDisplayButton("MaxValue");
     });
 
+    f.on("click", function () {
+        setUint();
+        updateMap(year_value, month_value);
+    });
+
+    c.on("click", function () {
+        setUint();
+        updateMap(year_value, month_value);
+    });
+
     function setDisplayButton(newDisplay) {
         activeState = undefined;
         d3.select("h2#state").text("");
@@ -112,6 +125,28 @@ const geoData = async () => {
         // displayValue.text("Displaying: "+display);
         displayValue.text("Displaying: " + displayButton.text());
         updateMap(year_value, month_value);
+    }
+
+    function setUint() {
+        if (degree === "F") {
+            f.attr("disabled", null);
+            c.attr("disabled", "true");
+            degree = "C";
+        } else {
+            f.attr("disabled", "true");
+            c.attr("disabled", null);
+            degree = "F";
+        }
+    }
+
+    function adjustedTemp(temp) {
+        if (degree === "C") {
+            calc = (temp - 32) * 5 / 9;
+            return Math.round(calc * 10) / 10;
+
+        } else {
+            return temp;
+        }
     }
 
 
@@ -139,16 +174,16 @@ const geoData = async () => {
 
 
         activeData.forEach((row, i) => {
-            stateTemps[row.STATE] = row[display];
+            stateTemps[row.STATE] = adjustedTemp(row[display]);
             stateToData[row.STATE] = i;
         });
-        //console.log(stateTemps);
+        // console.log(stateTemps);
         // console.log(stateToData);
 
 
 
 
-        const minMax = d3.extent(fulldata, d => d.AvgValue);
+        const minMax = d3.extent(fulldata, d => adjustedTemp(d.AvgValue));
         // console.log("MinMax");
         // console.log(minMax);
 
@@ -205,6 +240,8 @@ const geoData = async () => {
             updateGraphs(year_value, month_value);
         }
 
+        var prevState;
+
         function mouseOnPlot() {
             hoverBox.style("left", event.pageX - (hoveBoxWidth / 2) + "px")
                 .style("top", event.pageY - (hoverBoxHeight + 20) + "px")
@@ -216,9 +253,18 @@ const geoData = async () => {
             let dataRow = activeData[stateToData[idToState[state.attr("ident")]]];
             let degreeSymbol = String.fromCharCode(176);
             hoverBox.append("div").text(idToState[state.attr("ident")]);
-            hoverBox.append("div").text("Min Value " + dataRow.MinValue + degreeSymbol + degree);
-            hoverBox.append("div").text("Avg Value " + dataRow.AvgValue + degreeSymbol + degree);
-            hoverBox.append("div").text("Max Value " + dataRow.MaxValue + degreeSymbol + degree);
+            hoverBox.append("div").text("Min Value " + adjustedTemp(dataRow.MinValue) + degreeSymbol + degree);
+            hoverBox.append("div").text("Avg Value " + adjustedTemp(dataRow.AvgValue) + degreeSymbol + degree);
+            hoverBox.append("div").text("Max Value " + adjustedTemp(dataRow.MaxValue) + degreeSymbol + degree);
+            if (prevState === undefined) {
+                prevState = state;
+            }
+            if (prevState !== undefined && (idToState[prevState.attr("ident")]) !== idToState[state.attr("ident")]) {
+                prevState.attr("opacity", 1);
+                prevState = state;
+            } else {
+                state.attr("opacity", .7);
+            }
 
         }
 
@@ -263,8 +309,18 @@ const geoData = async () => {
             .range([0, legendWidth]);
         const barAxis = d3.axisBottom(barScale);
 
+        //     const pixelScale = d3.scaleLinear()
+        //     .domain([0, legendWidth])
+        //   // .range([adjustedTemp(minMax[0]), adjustedTemp(minMax[1])]); // In this case the "data" are pixels, and we get numbers to use in colorScale
+        //   .range(minMax[0],minMax[1]);
+        // const barScale = d3.scaleLinear()
+        //     //.domain([adjustedTemp(minMax[0]), adjustedTemp(minMax[1])])
+        //     .domain(minMax[0],minMax[1])
+        //     .range([0, legendWidth]);
+
         legendBox.html("");
 
+        // console.log(adjustedTemp(barScale));
         legendBox.append("g")
             .attr("class", "legendAxis")
             .style("stroke", "white")
@@ -433,7 +489,7 @@ const geoData = async () => {
                 d['STATE'] === idToState[activeState.attr("ident")]);
 
 
-            console.log(activeData); //filtered data
+            //  console.log(activeData); //filtered data
 
 
             /*************/
@@ -442,7 +498,7 @@ const geoData = async () => {
 
 
             var activeDataBar = activeData.filter(d => d['MONTH'] === activeMonth);
-            console.log(activeDataBar);
+            // console.log(activeDataBar);
 
             //scales
             // y scale
@@ -465,7 +521,7 @@ const geoData = async () => {
                     return d['ENERGY_SOURCE'];
                 }));
 
-        
+
             // axis
             // y axis
             var mwAxis = d3.axisLeft(mwScale);
@@ -521,7 +577,7 @@ const geoData = async () => {
 
 
             var activeDataLine = activeData.filter(d => d['ENERGY_SOURCE'] === 'Total');
-            console.log(activeDataLine);
+            //console.log(activeDataLine);
 
             const yearMin = d3.min(activeDataLine, d => d['YEAR']);
             const yearMax = d3.max(activeDataLine, d => d['YEAR']);
@@ -542,8 +598,8 @@ const geoData = async () => {
             const genMax = d3.max(activeDataLine, d => d['GENERATION']);
             const genScale = d3.scaleLinear().domain([genMin, genMax]).range([genChartHeight, 0]);
 
-            console.log(genMin);
-            console.log(genMax);
+            // console.log(genMin);
+            // console.log(genMax);
 
             // y axis
             var genAxis = d3.axisLeft(genScale);
