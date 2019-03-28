@@ -237,6 +237,7 @@ const geoData = async () => {
             activeState.style("fill", "honeydew");
             console.log(idToState[activeState.attr("ident")]);
             d3.select("h2#state").text(idToState[activeState.attr("ident")]);
+            map.selectAll(".state").attr("opacity", 1);
             updateGraphs(year_value, month_value);
         }
 
