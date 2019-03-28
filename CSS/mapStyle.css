@@ -20,7 +20,7 @@
     width: 140px;
     height: 60px;
     font: 12px sans-serif;
-    background: #f6fbfc;
+    background: honeydew;
     border: 1px solid grey;
     border-radius: 3px;
     pointer-events: none;
@@ -32,21 +32,22 @@
 
   #usaMapLegend {
     position: absolute;
-    background: black;
+    background: honeydew;
     padding: 0px 0px 10px 0px;
-    left: 20px;
-    top: 660px;
+    left: 15px;
+    top: 670px;
   }
 
-  #usaMapLegend line {
+  /* #usaMapLegend line {
     stroke: white;
   }
 
   #usaMapLegend path {
     stroke: white;
-  }
+  } */
 
   #usaMapLegend text {
-    fill: white;
+    /* fill: white; */
     font-size: 15px;
+    stroke: black;
   }

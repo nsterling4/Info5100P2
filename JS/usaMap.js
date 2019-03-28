@@ -15,6 +15,14 @@ const map = usaMap.append("g")
 
 let degree = "F";
 
+var year_value;
+var month_value;
+var activeState;
+
+let stateTemps = {};
+let idToState = {};
+let stateToData = {};
+
 
 const geoData = async () => {
 
@@ -23,17 +31,17 @@ const geoData = async () => {
     // console.log(usa);
 
     const stateIDs = await d3.tsv("Data/us-state-names.tsv");
-   // console.log(stateIDs);
+    // console.log(stateIDs);
 
 
 
 
     // Let's filter the dataset so we have only the lower 48 states
-    let filteredStates = ['02','15','60','66','69','72','74','78'];
+    let filteredStates = ['02', '15', '60', '66', '69', '72', '74', '78'];
     // Loop through state geometries and filter by id (padding with leading zeroes because they are stored as ints in the json)
-    usa.objects.states.geometries = usa.objects.states.geometries.filter( d => {
-                          return filteredStates.indexOf( d.id.toString().padStart(2,'0')  ) === -1;
-                        });
+    usa.objects.states.geometries = usa.objects.states.geometries.filter(d => {
+        return filteredStates.indexOf(d.id.toString().padStart(2, '0')) === -1;
+    });
 
 
 
@@ -68,62 +76,59 @@ const geoData = async () => {
 
     //   let activeYear = 2015;
     //  let activeMonth = 4;
-    
-    var activeState;
 
-    let display = "AvgValue"; 
+
+
+    let display = "AvgValue";
     let minButton = d3.select("button#MinValue");
     let avgButton = d3.select("button#AvgValue");
     let maxButton = d3.select("button#MaxValue");
     let displayValue = d3.select("#displayValue");
 
-    let displayButton = d3.select("#"+display);
-    displayButton.attr("disabled","null");
-    displayValue.text("Displaying: "+displayButton.text());
+    let displayButton = d3.select("#" + display);
+    displayButton.attr("disabled", "null");
+    displayValue.text("Displaying: " + displayButton.text());
 
-    minButton.on("click", function() {
+    minButton.on("click", function () {
         setDisplayButton("MinValue");
     });
 
-    avgButton.on("click", function() {
+    avgButton.on("click", function () {
         setDisplayButton("AvgValue");
     });
 
-    maxButton.on("click", function() {
+    maxButton.on("click", function () {
         setDisplayButton("MaxValue");
     });
 
     function setDisplayButton(newDisplay) {
         activeState = undefined;
         d3.select("h2#state").text("");
-        displayButton = d3.select("#"+display);
-        displayButton.attr("disabled",null);
+        displayButton = d3.select("#" + display);
+        displayButton.attr("disabled", null);
         display = newDisplay;
-        displayButton = d3.select("#"+display);
-        displayButton.attr("disabled","true");
-       // displayValue.text("Displaying: "+display);
-        displayValue.text("Displaying: "+displayButton.text());
+        displayButton = d3.select("#" + display);
+        displayButton.attr("disabled", "true");
+        // displayValue.text("Displaying: "+display);
+        displayValue.text("Displaying: " + displayButton.text());
         updateMap(year_value, month_value);
-
     }
 
 
     var hoverBox = d3.select("body").append("div")
-    .attr("class", "hoverBox")
-    .style("opacity", 0)
+        .attr("class", "hoverBox")
+        .style("opacity", 0)
 
 
     function updateMap(activeYear, activeMonth) {
         activeData = fulldata.filter(d => d['YEAR'] === activeYear && d['MONTH'] === activeMonth);
-       // console.log("DATA");
-       // console.log(activeData);
+        // console.log("DATA");
+        // console.log(activeData);
 
 
 
 
-        let stateTemps = {};
-        let idToState = {};
-        let stateToData = {};
+
         stateIDs.forEach(row => {
             stateTemps[row.name] = 0;
             idToState[row.id] = row.name;
@@ -144,8 +149,8 @@ const geoData = async () => {
 
 
         const minMax = d3.extent(fulldata, d => d.AvgValue);
-       // console.log("MinMax");
-       // console.log(minMax);
+        // console.log("MinMax");
+        // console.log(minMax);
 
 
 
@@ -158,7 +163,7 @@ const geoData = async () => {
         // const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
 
-       //const colorScale = d3.scaleSequential(d3.interpolateRdBu).domain(minMax);
+        //const colorScale = d3.scaleSequential(d3.interpolateRdBu).domain(minMax);
 
         // const colorScale = d3.scaleQuantile()
         //     .domain(d3.values(d3.values(stateTemps)))
@@ -166,38 +171,38 @@ const geoData = async () => {
 
         const colorScale = d3.scaleQuantize()
             .domain(minMax)
-           // .range(["navy", "blue", "lightblue", "lightpink", "red",d3.rgb(98,34,40)]);
-            .range([d3.rgb(31,21,62), d3.rgb(46,63,111), d3.rgb(1,93,161), d3.rgb(57,159,220)
-                , d3.rgb(230,140,75), d3.rgb(219,86,49), d3.rgb(168,39,35), d3.rgb(98,34,40)]);
+            // .range(["navy", "blue", "lightblue", "lightpink", "red",d3.rgb(98,34,40)]);
+            .range([d3.rgb(31, 21, 62), d3.rgb(46, 63, 111), d3.rgb(1, 93, 161), d3.rgb(57, 159, 220), d3.rgb(230, 140, 75), d3.rgb(219, 86, 49), d3.rgb(168, 39, 35), d3.rgb(98, 34, 40)]);
 
 
         map.selectAll(".state")
             .style("fill", d => colorScale(stateTemps[idToState[d.id]]));
 
-        console.log("activeState");    
-       // console.log(activeState);   
+        //console.log("activeState");    
+        // console.log(activeState);   
         if (activeState !== undefined) {
-            activeState.style("fill","white");
-            console.log(idToState[activeState.attr("ident")]);
+            activeState.style("fill", "honeydew");
+            //  console.log(idToState[activeState.attr("ident")]);
         }
 
 
         d3.selectAll(".state").on("mousemove", mouseOnPlot)
-                                .on("mouseout", mouseLeavesPlot)
-                                .on("click", mouseClickPlot);
+            .on("mouseout", mouseLeavesPlot)
+            .on("click", mouseClickPlot);
         d3.selectAll(".outline").on("mouseover", overlay)
-                                .on("mouseout", mouseLeavesPlot);
+            .on("mouseout", mouseLeavesPlot);
 
         var hoveBoxWidth = parseFloat(hoverBox.style("width"));
         var hoverBoxHeight = parseFloat(hoverBox.style("height"));
 
-        function mouseClickPlot(){
-            activeState=undefined;
+        function mouseClickPlot() {
+            activeState = undefined;
             updateMap(year_value, month_value);
             activeState = d3.select(this);
-            activeState.style("fill","white");
+            activeState.style("fill", "honeydew");
             console.log(idToState[activeState.attr("ident")]);
             d3.select("h2#state").text(idToState[activeState.attr("ident")]);
+            updateGraphs(year_value, month_value);
         }
 
         function mouseOnPlot() {
@@ -248,7 +253,7 @@ const geoData = async () => {
         };
         const legendWidth = legendBoxWidth - legendMargin.left - legendMargin.right;
         const legendHeight = legendBoxHeight - legendMargin.top - legendMargin.bottom;
-           
+
 
         const pixelScale = d3.scaleLinear()
             .domain([0, legendWidth])
@@ -298,30 +303,32 @@ const geoData = async () => {
     var year_text = document.getElementById("year");
 
     // var state_text = document.getElementById("state");
-   
 
-    var year_value = default_year;
-    var month_value = default_month;
+
+    year_value = default_year;
+    month_value = default_month;
 
     year_text.innerHTML = year_value;
-    month_text.innerHTML = months[month_value-1];
+    month_text.innerHTML = months[month_value - 1];
 
 
-    years.forEach(function(d, i){
+
+    years.forEach(function (d, i) {
         dropdownDiv.append("option")
-        .text(d)
-        .attr("value",d);
+            .text(d)
+            .attr("value", d);
 
     });
 
-    dropdownDiv.on("input", function(){
+    dropdownDiv.on("input", function () {
         year_value = Number(this.value);
         year_text.innerHTML = year_value;
         updateMap(year_value, month_value);
+        updateGraphs(year_value, month_value);
 
     });
 
-    
+
     slidersDiv.append("div").text("Month")
         .append("div").append("input")
         .attr("type", "range").attr("class", "slider")
@@ -332,16 +339,261 @@ const geoData = async () => {
         .attr("value", 0)
         .on("input", function () {
             month = months[this.value];
-           // console.log(this.value);
-            month_value = Number(this.value)+1;
+            // console.log(this.value);
+            month_value = Number(this.value) + 1;
             month_text.innerHTML = month;
             updateMap(year_value, month_value);
+            updateGraphs(year_value, month_value);
 
         });
 
 
 
     updateMap(default_year, default_month);
+    //updateGraphs(default_year, default_month);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /****** Bar Graph *******/
+    var svgType = d3.select("#producerType"); // bar graph
+    var svgTypeWidth = svgType.attr("width");
+    var svgTypeHeight = svgType.attr("height");
+    var margin = {
+        top: 20,
+        right: 20,
+        bottom: 50,
+        left: 50
+    };
+    var typeChartWidth = svgTypeWidth - margin.left - margin.right;
+    var typeChartHeight = svgTypeHeight - margin.top - margin.bottom;
+
+    /****** Line Graph *******/
+    var svgGen = d3.select("#yearlyGeneration"); // line graph
+    var svgGenWidth = svgGen.attr("width");
+    var svgGenHeight = svgGen.attr("height");
+    var genChartWidth = svgGenWidth - margin.left - margin.right;
+    var genChartHeight = svgGenHeight - margin.top - margin.bottom;
+
+    // var energySource = [];
+
+    // import data
+    let energyData = await d3.csv("Data/CombinedEnergy.csv", d3.autoType);
+
+    // let fullata = await d3.csv("Data/combinedWeather.csv", d3.autoType);
+
+
+    var cleanData = energyData.filter(d => d['GENERATION'] !== NaN &&
+        d['GENERATION'] > 0 &&
+        d['GENERATION'].length !== 0);
+
+
+    function updateGraphs(activeYear, activeMonth) {
+        if (activeState !== undefined) {
+
+            // console.log("UPDATE");
+
+            // console.log(year_value);
+            // console.log(month_value);
+            // console.log(activeState);
+            // console.log(idToState[activeState.attr("ident")]);
+
+
+            // stateToData[idToState[state.attr("ident")]]
+            // idToState[activeState.attr("ident")]
+
+
+            var activeData = cleanData.filter(d =>
+                d['YEAR'] === activeYear &&
+                d['STATE'] === idToState[activeState.attr("ident")]);
+
+
+            console.log(activeData); //filtered data
+
+
+            /*************/
+            /* Bar graph */
+            /*************/
+
+
+            var activeDataBar = activeData.filter(d => d['MONTH'] === activeMonth);
+            console.log(activeDataBar);
+
+            //scales
+            // y scale
+
+
+            var mwMin = d3.min(activeDataBar, d => d['GENERATION']);
+            var mwMax = d3.max(activeDataBar, d => d['GENERATION']);
+            var mwScale = d3.scaleLinear()
+                .domain([mwMin, mwMax])
+                .range([typeChartHeight, 20]);
+            // check the data
+            // console.log(mwMax);
+            // console.log(mwMin); //have negative values
+
+            //x scale
+            var typeScale = d3.scaleBand()
+                .rangeRound([0, typeChartWidth - 50])
+                .padding(0.4)
+                .domain(activeDataBar.map(function (d) {
+                    return d['ENERGY_SOURCE'];
+                }));
+
+        
+            // axis
+            // y axis
+            var mwAxis = d3.axisLeft(mwScale);
+            svgType.append("g")
+                .attr("class", "left axis")
+                .attr("transform", "translate(" + (margin.left + 50) + "," + (margin.top - 10) + ")")
+                .call(mwAxis);
+
+            // x axis
+            var typeAxis = d3.axisBottom(typeScale);
+            svgType.append("g")
+                .attr("class", "bottom axis")
+                .attr("transform", "translate(100," + (typeChartHeight + 30) + ")")
+                .call(typeAxis);
+
+            // labels
+            // x label
+            svgType.append("text")
+                .attr("class", "x axis label")
+                .attr("x", svgTypeWidth / 2)
+                .attr("y", svgTypeHeight - 8)
+                .attr("font-size", "18px")
+                .attr("text-anchor", "middle")
+                .text("Types of Source");
+
+            // y label
+            svgType.append("text")
+                .attr("class", "y axis label")
+                .attr("x", -svgTypeHeight / 2)
+                .attr("y", 20)
+                .attr("font-size", "18px")
+                .attr("text-anchor", "middle")
+                .attr("transform", "rotate(-90)")
+                .text("Generation(MWh)");
+
+            //bar
+            var bar = svgType.selectAll(".bar")
+                .data(activeDataBar)
+                .enter().append("rect")
+                .attr("class", "bar")
+                .attr("x", function (d) {
+                    return typeScale(d.ENERGY_SOURCE);
+                })
+                .attr("y", function (d) {
+                    return mwScale(d.GENERATION);
+                });
+            // .attr("transform", function(d) { return "translate(" +  + ",0)"; });
+
+
+            /*************/
+            /* line graph */
+            /*************/
+
+
+            var activeDataLine = activeData.filter(d => d['ENERGY_SOURCE'] === 'Total');
+            console.log(activeDataLine);
+
+            const yearMin = d3.min(activeDataLine, d => d['YEAR']);
+            const yearMax = d3.max(activeDataLine, d => d['YEAR']);
+            // console.log(yearMin);
+            // console.log(yearMax);
+
+
+            //x month, y generation
+            const monthMin = d3.min(activeDataLine, d => d['MONTH']);
+            const monthMax = d3.max(activeDataLine, d => d['MONTH']);
+            const monthScale = d3.scaleLinear().domain([monthMin, monthMax]).range([0, genChartWidth - 50]);
+
+            //console.log(monthMin);
+            //console.log(monthMax);
+
+            // y value
+            const genMin = d3.min(activeDataLine, d => d['GENERATION']);
+            const genMax = d3.max(activeDataLine, d => d['GENERATION']);
+            const genScale = d3.scaleLinear().domain([genMin, genMax]).range([genChartHeight, 0]);
+
+            console.log(genMin);
+            console.log(genMax);
+
+            // y axis
+            var genAxis = d3.axisLeft(genScale);
+            svgGen.append("g")
+                .attr("class", "left axis")
+                .attr("transform", "translate(" + (margin.left + 50) + "," + margin.top + ")")
+                .call(genAxis);
+
+            // x axis
+            var monthAxis = d3.axisBottom(monthScale);
+            svgGen.append("g")
+                .attr("class", "bottom axis")
+                .attr("transform", "translate(100," + (genChartHeight + 30) + ")")
+                .call(monthAxis);
+
+            // x label
+            svgGen.append("text")
+                .attr("class", "x axis label")
+                .attr("x", svgGenWidth / 2)
+                .attr("y", svgGenHeight - 8)
+                .attr("font-size", "18px")
+                .attr("text-anchor", "middle")
+                .text("Month");
+
+            // y label
+            svgGen.append("text")
+                .attr("class", "y axis label")
+                .attr("x", -svgGenHeight / 2)
+                .attr("y", 20)
+                .attr("font-size", "18px")
+                .attr("text-anchor", "middle")
+                .attr("transform", "rotate(-90)")
+                .text("Generation(MWh)");
+
+            // draw line
+            var line = d3.line()
+                .x(function (d, i) {
+                    return monthScale(i);
+                })
+                .y(function (d) {
+                    return genScale(d.GENERATION);
+                });
+
+            svgGen.append("path")
+                .datum(activeDataLine)
+                .attr("class", "line")
+                .attr('d', line);
+
+        }
+    }
 
 
 
