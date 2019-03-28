@@ -37,10 +37,10 @@ d3.csv("Data/CombinedEnergy.csv").then( function(data) {
 
   var activeData = fullGraphData.filter(d => d['GENERATION'] != NaN
               && d['GENERATION'] > 0        
-              && d['GENERATION'].length != 0
-              && d['CONSUMPTION'] != NaN
-              && d['CONSUMPTION'] > 0        
-              && d['CONSUMPTION'].length != 0);
+              && d['GENERATION'].length != 0);
+              // && d['CONSUMPTION'] != NaN
+              // && d['CONSUMPTION'] > 0        
+              // && d['CONSUMPTION'].length != 0);
 console.log(activeData); //filtered data
 
 // var year_month = activeData.filter(function (d) {
@@ -91,7 +91,6 @@ console.log(activeData); //filtered data
   var typeScale = d3.scaleBand()
     .rangeRound([0, typeChartWidth-50])
     .padding(0.4)
-    //probably change typeData to activeData or year_month after figuring out why activeData is empty
     .domain(activeData.map(function (d) {
       return d['ENERGY_SOURCE'];
     }));
