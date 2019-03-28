@@ -263,7 +263,10 @@ const geoData = async () => {
                 prevState.attr("opacity", 1);
                 prevState = state;
             } else {
-                if (state !== activeState) state.attr("opacity", .7);
+                
+                if (activeState == undefined || (idToState[state.attr("ident")] !== idToState[activeState.attr("ident")])) {
+                    state.attr("opacity", .7)
+                };
             }
 
         }
@@ -638,9 +641,11 @@ const geoData = async () => {
                 .text("Generation(MWh)");
 
             // draw line
+            var xAxisOffset =  162; //Not sure how to calculate given our variables and parameters
+            console.log(svgGenWidth);
             var line = d3.line()
                 .x(function (d, i) {
-                    return monthScale(i);
+                    return monthScale(i) + xAxisOffset;
                 })
                 .y(function (d) {
                     return genScale(d.GENERATION);
