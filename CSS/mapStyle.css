@@ -1,4 +1,45 @@
+/* header */
 
+header {
+  /* background-color: #F9FAF5; */
+  padding: 1px 0 30px 0;
+  font-family: monospace;
+  font-size: 200%;
+  color: #0C90AD;
+}
+
+#buttons {
+  text-align: center;
+}
+
+button {
+  background-color: #0C90AD;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+}
+button:hover {
+  opacity: 0.5;
+}
+
+
+
+/* Body */
+body {
+  font-family: monospace;
+  /* font-size: 110%; */
+  line-height: 20px;
+}
+
+
+/* map */
+#usa {
+  position: relative;
+  background-color: #BEF4FF;
+  cursor: pointer;
+}
 
 .state {
     fill: lightgrey;
@@ -11,71 +52,125 @@
   fill: none;
 }
 
+.hoverBox {
+  position: absolute;
+  text-align: center;
+  padding: 4px;
+  width: 140px;
+  height: 60px;
+  font: 12px sans-serif;
+  background: honeydew;
+  border: 1px solid grey;
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+
+/* Legend */
+#usaMapLegend {
+  position: absolute;
+  float: left;
+  background: #F9F3EE;
+  padding: 0px 0px 10px 0px;
+  left: 20px;
+  top: 700px;
+}
+#usaMapLegend text {
+  /* fill: white; */
+  font-family: monospace;
+  font-size: 14px;
+  stroke: black;
+}
+
+
+/* slider */
 
 .slider-labels{
+  display: right;
   margin: 0px -41px 0;
-  padding: 0px 0px 0px 40px;
+  padding: 0px 10px 0px 40px;
   list-style: none;
-
   }
 
-  .slider-labels li{
+.slider-labels li{
 
-    position: relative fixed;
+  position: relative fixed;
 
-    float: left;
-    width: 59px;
-    text-align: center;
-    color: #000000;
-    font-size: 10px;
-    
+  float: left;
+  width: 59px;
+  color: #000000;
+  font-size: 10px;
+}
 
-  }
+/* dropdown */
+#dropdown {
+  display: block;
+  margin: 0 auto;
+  padding: 5px;
+  font-size: 16px;
+}
 
-  .hoverBox {
-    position: absolute;
-    text-align: center;
-    padding: 4px;
-    width: 140px;
-    height: 60px;
-    font: 12px sans-serif;
-    background: honeydew;
-    border: 1px solid grey;
-    border-radius: 10px;
-    pointer-events: none;
-  }
 
-  #usa {
-      background-color: aquamarine;
-      float: left;
-  }
+/* position */
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width:60%;
+}
 
-  #usaMapLegend {
-    position: absolute;
-    background: honeydew;
-    padding: 0px 0px 10px 0px;
-    left: 15px;
-    top: 630px;
-  }
+#boxes {
+  margin: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  /* grid-area: ". box . box ."; */
+  padding: 50px;
+}
 
-  /* #usaMapLegend line {
-    stroke: white;
-  }
+/* #usaMapLegend line {
+  stroke: white;
+}
 
-  #usaMapLegend path {
-    stroke: white;
-  } */
+#usaMapLegend path {
+  stroke: white;
+} */
 
-  #usaMapLegend text {
-    /* fill: white; */
-    font-size: 14px;
-    stroke: black;
-  }
 
-  #producerType {
-    float: left;
-  }
+/* Graphs */
 
-  #yearlyGeneration {
-    float: right;
-  }
+
+/* Bar graph */
+#producerType {
+  background: #F3E4E7;
+  float: left;
+}
+
+.bar {
+  fill: #B1AFCD;
+}
+
+/* Line graph */
+#yearlyGeneration{
+  background-color: #F3E4E7;
+  float: right;
+}
+
+.line {
+  fill: none;
+  stroke: #B1AFCD;
+  stroke-width: 2px;
+}
+
+
+/* footer */
+footer {
+  padding: 10px 10px;
+  background-color:#FED361;
+  color: #FFFFFF;
+  font-size: small;
+  line-height: 20px;
+}
+footer a{
+  color: #FFFFFF;
+}
