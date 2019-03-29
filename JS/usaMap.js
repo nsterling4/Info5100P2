@@ -153,7 +153,7 @@ const geoData = async () => {
 
     var hoverBox = d3.select("body").append("div")
         .attr("class", "hoverBox")
-        .style("opacity", 0)
+        .style("opacity", 0);
 
 
     function updateMap(activeYear, activeMonth) {
@@ -599,19 +599,50 @@ const geoData = async () => {
             //bar
 
             var xAxisOffsetBar =  16; //Not sure how to calculate given our variables and parameters
+            var consumptionString;
             var bar = svgType.selectAll(".bar")
                 .data(activeDataBar)
                 .enter().append("rect")
                 .attr("class", "bar")
-                .attr("x", function (d) {
+                .attr("x", function (d) {   
                     return typeScale(d.ENERGY_SOURCE) + xAxisOffsetBar;
                 })
                 .attr("y", function (d) {
                     return mwScale(d.GENERATION);
                 })
-                .attr("fill", function (d) {return colorScale(d.ENERGY_SOURCE);})
+                .attr("id", d => d.ENERGY_SOURCE)
                 .attr("width", 30)
-                .attr("height", function(d) { return typeChartHeight + 30 - mwScale(d.GENERATION) });
+                .attr("height", function(d) { return typeChartHeight + 30 - mwScale(d.GENERATION) })
+                .on("mouseover", function(d){
+                    console.log("hover");
+                    document.getElementById(d.ENERGY_SOURCE).style.opacity = .7;
+                    console.log(this);
+
+                })
+                .on("mouseout", function(d){
+                    console.log("out")
+                    document.getElementById(d.ENERGY_SOURCE).style.opacity = 1;
+                    console.log(this);
+                })
+
+                .on("click", function(d){
+                    console.log(d);
+                    if (d.CONSUMPTION !== -1){
+
+                        consumptionString = d.STATE + " has consumed " + d.CONSUMPTION/10**6 + " MWh of " + d.ENERGY_SOURCE.toLowerCase();
+                    }else{
+
+                        consumptionString = "Consumption data is not available for this resource.";
+                    }
+
+                    document.getElementById("consumptionInfo").innerHTML = consumptionString;
+/*
+                    hoverBox.append("div").text("Min Value " + adjustedTemp(dataRow.MinValue) + degreeSymbol + degree);
+            hoverBox.append("div").text("Avg Value " + adjustedTemp(dataRow.AvgValue) + degreeSymbol + degree);
+            hoverBox.append("div").text("Max Value " + adjustedTemp(dataRow.MaxValue) + degreeSymbol + degree);
+*/
+                });
+                
             // .attr("transform", function(d) { return "translate(" +  + ",0)"; });
 
 
@@ -697,6 +728,23 @@ const geoData = async () => {
                 .datum(activeDataLine)
                 .attr("class", "line")
                 .attr('d', line);
+
+            svgGen.on("mousemove", function(d){
+                let [x, y] = d3.mouse(this);
+                if (x <= 80) x = 80;
+                if (x>=670) x = 670;
+                svgGen.selectAll("line").remove();
+                svgGen.append("line")
+                .style("stroke","red")
+                .attr("x1", x)
+                .attr("x2", x)
+                .attr("y1", 0)
+                .attr("y2", genChartHeight +30);
+            }).on("click",function(d){
+
+
+
+            });
 
         }
     }
