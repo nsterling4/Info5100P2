@@ -77,7 +77,7 @@ body {
   background: #F9F3EE;
   padding: 0px 0px 10px 0px;
   left: 20px;
-  top: 700px;
+  top: 760px;
 }
 #usaMapLegend text {
   /* fill: white; */
@@ -129,7 +129,7 @@ body {
 }
 
 .display{
-  padding-top: 180px;
+  padding-top: 190px;
   padding-bottom: 210px;
 }
 
