@@ -681,13 +681,17 @@ const geoData = async () => {
             // draw line
             var xAxisOffsetLine =  135; //Not sure how to calculate given our variables and parameters
            // console.log(svgGenWidth);
+           
             var line = d3.line()
                 .x(function (d, i) {
                     return monthScale(i) + xAxisOffsetLine;
                 })
                 .y(function (d) {
                     return genScale(d.GENERATION);
-                });
+                })
+                //.curve(d3.curveBasis);
+                .curve(d3.curveCardinal);
+                //.curve(d3.curveMonotoneX);
 
             svgGen.append("path")
                 .datum(activeDataLine)
