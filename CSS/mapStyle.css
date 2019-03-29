@@ -5,7 +5,7 @@ header {
   padding: 1px 0 30px 0;
   font-family: monospace;
   font-size: 200%;
-  color: #0C90AD;
+  color: rgb(97, 183, 202);
 }
 
 #buttons {
@@ -15,13 +15,13 @@ header {
 }
 
 button {
-  background-color: #0C90AD;
+  background-color: rgb(97, 183, 202);
   color: white;
   padding: 14px 20px;
   margin: 8px 0;
   border: none;
   cursor: pointer;
-  width: 15%;
+  width: 15%; 
 }
 
 button:hover {
@@ -86,11 +86,6 @@ body {
   stroke: black;
 }
 
-/* values */
-#display {
-  float: right;
-}
-
 
 /* slider */
 
@@ -130,7 +125,17 @@ body {
 
 .boxes {
   column-width: 600px;
+  column-gap: 50px;
 }
+
+.display{
+  padding-top: 180px;
+  padding-bottom: 210px;
+}
+
+/* .box2 {
+  padding-top: 100px;
+} */
 
 /* #usaMapLegend line {
   stroke: white;
@@ -170,7 +175,7 @@ body {
 /* footer */
 footer {
   padding: 10px 10px;
-  background-color:#0C90AD;
+  background-color:rgb(97, 183, 202);
   color: #FFFFFF;
   font-size: small;
   line-height: 20px;
