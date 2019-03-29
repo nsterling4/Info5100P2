@@ -128,13 +128,8 @@ body {
   width:50%;
 }
 
-#boxes {
-  margin: 20px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr;
-  /* grid-area: ". box . box ."; */
-  padding: 50px;
+.boxes {
+  column-width: 600px;
 }
 
 /* #usaMapLegend line {
@@ -152,7 +147,7 @@ body {
 /* Bar graph */
 #producerType {
   background: #F3E4E7;
-  float: left;
+  /* float: left; */
 }
 
 .bar {
@@ -162,7 +157,7 @@ body {
 /* Line graph */
 #yearlyGeneration{
   background-color: #F3E4E7;
-  float: right;
+  /* float: right; */
 }
 
 .line {

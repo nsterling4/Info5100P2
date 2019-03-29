@@ -26,7 +26,7 @@
 </header>
 
 <body>
-
+  <div class="boxes">
   <!-- map with legend -->
   <div>
 
@@ -35,55 +35,61 @@
 
   </div>
 
-  <div class="display">
-    <!-- display values -->
-    <p id="displayValue"></p>
-    <h2 id="month"></h2>
-    <h2 id="year"></h2>
-    <h2 id="state"></h2>
 
-    <div id="sliders"></div>
-    <ul class="slider-labels">
-      <li>January</li>
-      <li>February</li>
-      <li>March</li>
-      <li>April</li>
-      <li>May</li>
-      <li>June</li>
-      <li>July</li>
-      <li>August</li>
-      <li>September</li>
-      <li>October</li>
-      <li>November</li>
-      <li>December</li>
-    </ul>
-    <br>
-    <div id="dropdown"></div>
-  </div>
   
   <!-- two graphs -->
-  <div>
 
+  <!-- left -->
+  <div class="box">
     <h2> Bar chart for type of producer</h2>
     <p id="consumptionInfo"></p>
-    <svg id="producerType" height="400" width="900"></svg>
+    <svg id="producerType" height="400" width="850"></svg>
+  </div>
 
+
+  <div class="display">
+      <!-- display values -->
+      <p id="displayValue"></p>
+      <h2 id="month"></h2>
+      <h2 id="year"></h2>
+      <h2 id="state"></h2>
+  
+      <div id="sliders"></div>
+      <ul class="slider-labels">
+        <li>January</li>
+        <li>February</li>
+        <li>March</li>
+        <li>April</li>
+        <li>May</li>
+        <li>June</li>
+        <li>July</li>
+        <li>August</li>
+        <li>September</li>
+        <li>October</li>
+        <li>November</li>
+        <li>December</li>
+      </ul>
+      <br>
+      <div id="dropdown"></div>
+    </div>
+
+<!-- right -->
+  <div class="box">
     <h2> Line chart for Yearly Generation</h2>
     <svg id="yearlyGeneration" height="400" width="700"></svg>
-
   </div>
-  
+</div>
   <script type="text/javascript" src="JS/usaMap.js"></script>
 
 </body>
 
 
-<footer>
+<!-- <footer>
   <p> 
     INFO5100 Class Project, Copyright &copy; 2019 <br>
     Yejeong Choi Justin Joco Noah Sterling
   </p>
         
-</footer>
+</footer> -->
 
 </html>
