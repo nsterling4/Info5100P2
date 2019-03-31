@@ -26,60 +26,55 @@
 </header>
 
 <body>
-  <div class="boxes">
+
   <!-- map with legend -->
-  <div>
+  <div class="column1">
     <h2> US Weather Map </h2>
-    <svg id="usa" height="600" width="780" style="border:1px solid black"></svg>
+    <svg id="usa" height="500" width="600" style="border:1px solid black"></svg>
     <svg id="usaMapLegend" height="60" width="450"></svg>
-
   </div>
-
-
-  
-  <!-- two graphs -->
-
-  <!-- left -->
-  <div class="box1">
-    <h2> Bar chart for type of producer</h2>
-    <p id="consumptionInfo"></p>
-    <svg id="producerType" height="400" width="850"></svg>
-  </div>
-
-
-  <div class="display">
-      <!-- display values -->
+    <!-- display values -->
+  <div class="column2">
       <p id="displayValue" style="color:#B1AFCD"></p>
       <h2 id="month"></h2>
       <h2 id="year"></h2>
       <h2 id="state" style="color:#B1AFCD"></h2>
-  
-      <div id="sliders"></div>
-      <ul class="slider-labels">
-        <li>January</li>
-        <li>February</li>
-        <li>March</li>
-        <li>April</li>
-        <li>May</li>
-        <li>June</li>
-        <li>July</li>
-        <li>August</li>
-        <li>September</li>
-        <li>October</li>
-        <li>November</li>
-        <li>December</li>
-      </ul>
-      <br>
-      <div id="dropdown"></div>
-    </div>
 
-<!-- right -->
-  <div class="box2">
-    <h2> Line chart for Yearly Generation</h2>
-    <svg id="yearlyGeneration" height="400" width="700"></svg>
+      <div id="sliders"></div>
+          <ul class="slider-labels">
+              <li>Jan</li>
+              <li>Feb</li>
+              <li>Mar</li>
+              <li>Apr</li>
+              <li>May</li>
+              <li>June</li>
+              <li>July</li>
+              <li>Aug</li>
+              <li>Sept</li>
+              <li>Oct</li>
+              <li>Nov</li>
+              <li>Dec</li>
+          </ul>
+      <div id="dropdown"></div>
+
+<!-- line graph -->
+        <h2> Line chart for Yearly Generation</h2>
+        <svg id="yearlyGeneration" height="400" width="600"></svg>
+    </div>
   </div>
-</div>
+
+
+
+
+<!-- bar graph -->
+  <div class="box2">
+      <h2> Bar chart for type of producer</h2>
+      <p id="consumptionInfo"></p>
+      <svg id="producerType" height="400" width="850"></svg>
+  </div>
+
   <script type="text/javascript" src="JS/usaMap.js"></script>
+
 <br>
 </body>
 
