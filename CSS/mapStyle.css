@@ -2,9 +2,9 @@
 
 header {
   /* background-color: #F9FAF5; */
-  padding: 1px 0 30px 0;
+  padding: 30px 0 30px 0;
   font-family: monospace;
-  color: rgb(97, 183, 202);
+  color:rgb(97, 183, 202);
 }
 
 
@@ -77,7 +77,7 @@ button:hover {
   background: #F9F3EE;
   padding: 0px 0px 10px 0px;
   left: 20px;
-  top: 570px;
+  top: 600px;
 }
 #usaMapLegend text {
   /* fill: white; */
@@ -142,14 +142,14 @@ button:hover {
   clear: both;
 }
 
-/* 
+
 .box2 {
   position: static;
   display: block;
   margin-left: auto;
   margin-right: auto;
-  width:60%;
-} */
+  width:70%;
+}
 
 
 /* #usaMapLegend line {
