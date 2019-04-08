@@ -483,7 +483,7 @@ const geoData = async () => {
     // import data
     let energyData = await d3.csv("Data/CombinedEnergy.csv", d3.autoType);
 
-    // let fullata = await d3.csv("Data/combinedWeather.csv", d3.autoType);
+ 
 
 
     var cleanData = energyData.filter(d => d['GENERATION'] !== NaN &&
@@ -557,7 +557,8 @@ const geoData = async () => {
                 }));
 
            
-            var colorScale = d3.scaleOrdinal().range(d3.schemeCategory10)
+            //var colorScale = d3.scaleOrdinal(["black", "orange", "blue", "yellow", "red", "grey", "grey", "grey", "black", "yellow", "white","brown" ]);
+            var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
             // axis
             // y axis
             var p = d3.precisionPrefix(1e5, 1.3e6);
@@ -598,12 +599,15 @@ const geoData = async () => {
 
             //bar
 
+          //  let barColorScale = d3.scaleOrdinal(d3.schemeCategory20);
+
             var xAxisOffsetBar =  16; //Not sure how to calculate given our variables and parameters
             var consumptionString;
             var bar = svgType.selectAll(".bar")
                 .data(activeDataBar)
                 .enter().append("rect")
                 .attr("class", "bar")
+                .attr("fill",d => colorScale(d["ENERGY_SOURCE"]))
                 .attr("x", function (d) {   
                     return typeScale(d.ENERGY_SOURCE) + xAxisOffsetBar;
                 })
@@ -612,36 +616,36 @@ const geoData = async () => {
                 })
                 .attr("id", d => d.ENERGY_SOURCE)
                 .attr("width", 30)
-                .attr("height", function(d) { return typeChartHeight + 30 - mwScale(d.GENERATION) })
-                .on("mouseover", function(d){
-                    console.log("hover");
-                    document.getElementById(d.ENERGY_SOURCE).style.opacity = .7;
-                    console.log(this);
+                .attr("height", function(d) { return typeChartHeight + 30 - mwScale(d.GENERATION) });
+                // .on("mouseover", function(d){
+                //     console.log("hover");
+                //     document.getElementById(d.ENERGY_SOURCE).style.opacity = .7;
+                //     console.log(this);
 
-                })
-                .on("mouseout", function(d){
-                    console.log("out")
-                    document.getElementById(d.ENERGY_SOURCE).style.opacity = 1;
-                    console.log(this);
-                })
+                // })
+                // .on("mouseout", function(d){
+                //     console.log("out")
+                //     document.getElementById(d.ENERGY_SOURCE).style.opacity = 1;
+                //     console.log(this);
+                // })
 
-                .on("click", function(d){
-                    console.log(d);
-                    if (d.CONSUMPTION !== -1){
+                // .on("click", function(d){
+                //     console.log(d);
+                //     if (d.CONSUMPTION !== -1){
 
-                        consumptionString = d.STATE + " has consumed " + d.CONSUMPTION/10**6 + " MWh of " + d.ENERGY_SOURCE.toLowerCase();
-                    }else{
+                //         consumptionString = d.STATE + " has consumed " + d.CONSUMPTION/10**6 + " MWh of " + d.ENERGY_SOURCE.toLowerCase();
+                //     }else{
 
-                        consumptionString = "Consumption data is not available for this resource.";
-                    }
+                //         consumptionString = "Consumption data is not available for this resource.";
+                //     }
 
-                    document.getElementById("consumptionInfo").innerHTML = consumptionString;
+                    // document.getElementById("consumptionInfo").innerHTML = consumptionString;
 /*
                     hoverBox.append("div").text("Min Value " + adjustedTemp(dataRow.MinValue) + degreeSymbol + degree);
             hoverBox.append("div").text("Avg Value " + adjustedTemp(dataRow.AvgValue) + degreeSymbol + degree);
             hoverBox.append("div").text("Max Value " + adjustedTemp(dataRow.MaxValue) + degreeSymbol + degree);
 */
-                });
+                // });
                 
             // .attr("transform", function(d) { return "translate(" +  + ",0)"; });
 
