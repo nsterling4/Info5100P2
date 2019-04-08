@@ -76,8 +76,8 @@ button:hover {
   float: left;
   background: #F9F3EE;
   padding: 0px 0px 10px 0px;
-  left: 15px;
-  top: 620px;
+  left: 20px;
+  top: 570px;
 }
 #usaMapLegend text {
   /* fill: white; */
@@ -123,32 +123,41 @@ button:hover {
   width:50%;
 }
 
-.container {
+/* .container {
   position: relative; 
   height: 0; 
   width: 100%; 
   padding: 0;
   padding-bottom: 100%; 
-}
+} */
 
-.column1 {
+.column {
   float: left;
-  width: 50%;
-  padding: 5px;
-}
-.column2 {
-  float:  right;
-  width: 50%;
-  padding: 5px;
+  padding: 10px;
 }
 
+/* .column.left {
+  width: 50%;
+}
+
+.column.right {
+  width: 50%;
+} */
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* 
 .box2 {
   position: static;
   display: block;
   margin-left: auto;
   margin-right: auto;
   width:60%;
-}
+} */
 
 
 /* #usaMapLegend line {
