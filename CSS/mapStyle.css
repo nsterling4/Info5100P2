@@ -146,9 +146,9 @@ button:hover {
 .box2 {
   position: static;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width:70%;
+  padding: 5%;
+
+
 }
 
 
