@@ -7,25 +7,6 @@ header {
   color: rgb(97, 183, 202);
 }
 
-#buttons {
-  display: inline;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-button {
-  background-color: rgb(97, 183, 202);
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  cursor: pointer;
-  width: 15%; 
-}
-
-button:hover {
-  opacity: 0.5;
-}
 
 
 
@@ -36,6 +17,26 @@ body {
   line-height: 20px;
 }
 
+/* buttons */
+#buttons {
+  display: inline;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* 
+button {
+  background-color: rgb(97, 183, 202);
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 15%; 
+} */
+
+button:hover {
+  opacity: 0.5;
+}
 
 /* map */
 #usa {
