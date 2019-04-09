@@ -23,6 +23,8 @@ let stateTemps = {};
 let idToState = {};
 let stateToData = {};
 
+var activeSlider = {};
+activeSlider.value = 0;
 
 const geoData = async () => {
 
@@ -356,7 +358,8 @@ const geoData = async () => {
     let default_month = 1;
 
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
+    var month = months[default_month - 1];
+    var prevMonthID = month;
     var slidersDiv = d3.select("#sliders").append("div"); 
 
     var month_text = document.getElementById("month");
@@ -402,33 +405,43 @@ const geoData = async () => {
     });
 
 */
-
-    slidersDiv.append("div").text("Month")
-        .append("div").append("input")
+   
+    slidersDiv.append("div").text("Month");
+    slidersDiv.append("div")
+        .append("input")
         .attr("type", "range")
         .attr("class", "slider")
         .attr("id", "month")
         .style("width", "660px")
         .attr("min", 0)
         .attr("max", 11)
-        .attr("value", 0)
+        .attr("onload", function(){
+            console.log(this);
+            this.value = 0;
+            activeSlider = this;
+           
+        })
         .on("input", function () {
+            console.log(this);
+            activeSlider = this;
+            console.log(this.value);
+
+            prevMonthID = month;
+               
             month = months[this.value];
-            // console.log(this.value);
             month_value = Number(this.value) + 1;
             month_text.innerHTML = month;
             updateMap(year_value, month_value);
             updateGraphs(year_value, month_value);
+           
+        
 
         });
-
-
-
-
+   
 
     updateMap(default_year, default_month);
 
-
+   
 
 
 
@@ -490,13 +503,15 @@ const geoData = async () => {
         d['GENERATION'].length !== 0);
 
     function clearGraphs() {
-        svgGen.selectAll("path.line").remove();
+        
         svgType.selectAll("text").remove();
         svgType.selectAll("g").remove();
         svgType.selectAll(".bar").remove();
 
+        svgGen.selectAll("path.line").remove();
         svgGen.selectAll("text").remove();
         svgGen.selectAll("g").remove();
+        svgGen.selectAll(".bar").remove();
 
         d3.select("#coal").text("Coal:0 Short Tons,");
         d3.select("#gas").text("Natural Gas:0 Mcf,");
@@ -508,7 +523,7 @@ const geoData = async () => {
     function updateGraphs(activeYear, activeMonth) {
         
         clearGraphs();
-       
+        
         if (activeState !== undefined) {
 
             // console.log("UPDATE");
@@ -725,7 +740,7 @@ const geoData = async () => {
 
             // console.log(genMin);
             // console.log(genMax);
-
+            var xAxisOffsetLine =  120; 
             // y axis
             var genAxis = d3.axisLeft(genScale).tickFormat(d => f(d).slice(0,-1));
             svgGen.append("g")
@@ -735,10 +750,20 @@ const geoData = async () => {
 
             // x axis
             var monthAxis = d3.axisBottom(monthScale);
+            var monthTickArray = [];
             svgGen.append("g")
                 .attr("class", "bottom axis")
                 .attr("transform", "translate(80," + (genChartHeight + 30) + ")")
-                .call(monthAxis);
+                .call(monthAxis).selectAll(".tick").each(function(data){
+
+                 var tick = d3.select(this);
+                 var string = tick.attr("transform");
+                 var translate = string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",");
+               
+                  monthTickArray.push(Number(translate[0]) + 80);
+                });
+          
+            console.log(monthTickArray);
 
             // x label
             svgGen.append("text")
@@ -760,8 +785,9 @@ const geoData = async () => {
                 .text("Generation(MWh)");
 
             // draw line
-            var xAxisOffsetLine =  135; //Not sure how to calculate given our variables and parameters
+            //Not sure how to calculate given our variables and parameters
            // console.log(svgGenWidth);
+            
            
             var line = d3.line()
                 .x(function (d, i) {
@@ -779,25 +805,76 @@ const geoData = async () => {
                 .attr("class", "line")
                 .attr('d', line);
 
+            drawActiveMonth(month, prevMonthID, month_value-1);
+
             svgGen.on("mousemove", function(d){
                 let [x, y] = d3.mouse(this);
-                if (x <= 80) x = 80;
-                if (x>=670) x = 670;
-                svgGen.selectAll("line").remove();
-                svgGen.append("line")
-                .style("stroke","red")
-                .attr("x1", x)
-                .attr("x2", x)
-                .attr("y1", 0)
-                .attr("y2", genChartHeight +30);
-            }).on("click",function(d){
+                console.log(x);
+                
+                if (x <= 80) {
+                    x = 80;
+                }
+                else if (x>=521){ 
+                    x = 521;
+                }
+                else{
+                    svgGen.select("#line").remove();        
+                    svgGen.append("line")
+                    .style("stroke","red")
+                    .attr("id", "line")
+                    .attr("x1", x)
+                    .attr("x2", x)
+                    .attr("y1", 0)
+                    .attr("y2", genChartHeight +30);
+                }
+                
+            });
+            svgGen.on("mouseleave",function(d){
+                svgGen.select("#line").remove();
+             
+            });
 
-
+            svgGen.on("click",function(d){
+                let [x, y] = d3.mouse(this);
+                let distanceArr = monthTickArray.map(function(value){return Math.abs(value - x);});
+                let closestMonth = distanceArr.indexOf(Math.min(...distanceArr));
+              
+                prevMonthID = month;
+                month = months[closestMonth];
+                month_text.innerHTML = month;
+                month_value = closestMonth+1;
+               
+                activeSlider.value = closestMonth;
+                
+                updateMap(year_value, month_value);
+                updateGraphs(year_value, month_value);
 
             });
 
+            function drawActiveMonth(month_id, prevMonthID, currMonth){
+                 console.log(prevMonthID);
+                 d3.select("#" + prevMonthID).remove();
+                 svgGen.append("rect")
+                    .attr("class", "bar")
+                    .attr("fill", "black")
+                    .style("opacity", .4)
+                    .attr("x", function () {   
+                        return monthScale(currMonth)-20 + xAxisOffsetLine;
+                    })
+                    .attr("y", function () {
+                        return 0;
+                    })
+                    .attr("id", month_id)
+                    .attr("width", 40)
+                    .attr("height", function(d) { return genChartHeight +30 });
+
+
+            }
+
         }
     }
+
+
 
 
 
