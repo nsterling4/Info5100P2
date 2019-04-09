@@ -76,10 +76,7 @@ const geoData = async () => {
 
     console.log(fulldata);
 
-    //   let activeYear = 2015;
-    //  let activeMonth = 4;
-
-
+ 
 
     let display = "AvgValue";
     let minButton = d3.select("button#MinValue");
@@ -187,25 +184,6 @@ const geoData = async () => {
 
 
         const minMax = d3.extent(fulldata, d => adjustedTemp(d.AvgValue));
-        // console.log("MinMax");
-        // console.log(minMax);
-
-
-
-        //   let colorScale = d3.scaleLinear()
-        //   .domain(minMax)
-        //   .range(["blue", "red"])
-        //   .clamp(true)
-        //   .interpolate(d3.interpolateHcl);
-
-        // const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-
-
-        //const colorScale = d3.scaleSequential(d3.interpolateRdBu).domain(minMax);
-
-        // const colorScale = d3.scaleQuantile()
-        //     .domain(d3.values(d3.values(stateTemps)))
-        //     .range(["navy", "blue", "lightblue", "lightpink", "red","maroon"]);
 
         const colorScale = d3.scaleQuantize()
             .domain(minMax)
@@ -220,7 +198,7 @@ const geoData = async () => {
         // console.log(activeState);   
         if (activeState !== undefined) {
             activeState.style("fill", "honeydew");
-            //  console.log(idToState[activeState.attr("ident")]);
+            
         }
 
 
@@ -286,11 +264,6 @@ const geoData = async () => {
 
 
 
-
-
-
-
-
         //  Credit Prof. Rz. Adapted as needed
         const legendBox = d3.select("#usaMapLegend");
         const legendBoxWidth = legendBox.attr("width");
@@ -317,18 +290,10 @@ const geoData = async () => {
             .range([0, legendWidth]);
         const barAxis = d3.axisBottom(barScale);
 
-        //     const pixelScale = d3.scaleLinear()
-        //     .domain([0, legendWidth])
-        //   // .range([adjustedTemp(minMax[0]), adjustedTemp(minMax[1])]); // In this case the "data" are pixels, and we get numbers to use in colorScale
-        //   .range(minMax[0],minMax[1]);
-        // const barScale = d3.scaleLinear()
-        //     //.domain([adjustedTemp(minMax[0]), adjustedTemp(minMax[1])])
-        //     .domain(minMax[0],minMax[1])
-        //     .range([0, legendWidth]);
 
         legendBox.html("");
 
-        // console.log(adjustedTemp(barScale));
+   
         legendBox.append("g")
             .attr("class", "legendAxis")
             .style("stroke", "white")
@@ -366,12 +331,10 @@ const geoData = async () => {
 
     var dropdownDiv = d3.select("#dropdown").append("select");
 
-  //  var slidersDiv = d3.select("#sliders").append("input");
 
     var year_text = document.getElementById("year");
 
-    // var state_text = document.getElementById("state");
-    //slidersDiv.attr("type", "range").style("width", "600px");
+
 
     year_value = default_year;
     month_value = default_month;
@@ -396,15 +359,7 @@ const geoData = async () => {
 
     });
 
-/*
-    months.forEach(function(d, i){
-        slidersDiv.append("option")
-            .attr("label", d[i])
-            .attr("value", d);
 
-    });
-
-*/
    
     slidersDiv.append("div").text("Month");
     slidersDiv.append("div")
@@ -443,33 +398,6 @@ const geoData = async () => {
 
    
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /****** Bar Graph *******/
     var svgType = d3.select("#producerType"); // bar graph
     var svgTypeWidth = svgType.attr("width");
@@ -490,7 +418,6 @@ const geoData = async () => {
     var genChartWidth = svgGenWidth - margin.left - margin.right;
     var genChartHeight = svgGenHeight - margin.top - margin.bottom;
 
-    // var energySource = [];
 
     // import data
     let energyData = await d3.csv("Data/CombinedEnergy.csv", d3.autoType);
@@ -527,24 +454,12 @@ const geoData = async () => {
         
         if (activeState !== undefined) {
 
-            // console.log("UPDATE");
-
-            // console.log(year_value);
-            // console.log(month_value);
-            // console.log(activeState);
-            // console.log(idToState[activeState.attr("ident")]);
-
-
-            // stateToData[idToState[state.attr("ident")]]
-            // idToState[activeState.attr("ident")]
 
 
             var activeData = cleanData.filter(d =>
                 d['YEAR'] === activeYear &&
                 d['STATE'] === idToState[activeState.attr("ident")]);
 
-
-            //  console.log(activeData); //filtered data
 
 
             /*************/
@@ -611,7 +526,7 @@ const geoData = async () => {
                 }));
 
            
-            //var colorScale = d3.scaleOrdinal(["black", "orange", "blue", "yellow", "red", "grey", "grey", "grey", "black", "yellow", "white","brown" ]);
+          
             var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
             // axis
             // y axis
@@ -653,10 +568,7 @@ const geoData = async () => {
 
             //bar
 
-          //  let barColorScale = d3.scaleOrdinal(d3.schemeCategory20);
-
-
-
+        
 
             var xAxisOffsetBar =  16; //Not sure how to calculate given our variables and parameters
             var consumptionString;
@@ -675,41 +587,7 @@ const geoData = async () => {
                 .attr("width", 30)
                 .attr("height", function(d) { return typeChartHeight + 30 - mwScale(d.GENERATION) });
 
-            //  function (d) {
-            //      console.log(d.CONSUMPTION);
-            //  }
            
-                // .on("mouseover", function(d){
-                //     console.log("hover");
-                //     document.getElementById(d.ENERGY_SOURCE).style.opacity = .7;
-                //     console.log(this);
-
-                // })
-                // .on("mouseout", function(d){
-                //     console.log("out")
-                //     document.getElementById(d.ENERGY_SOURCE).style.opacity = 1;
-                //     console.log(this);
-                // })
-
-                // .on("click", function(d){
-                //     console.log(d);
-                //     if (d.CONSUMPTION !== -1){
-
-                //         consumptionString = d.STATE + " has consumed " + d.CONSUMPTION/10**6 + " MWh of " + d.ENERGY_SOURCE.toLowerCase();
-                //     }else{
-
-                //         consumptionString = "Consumption data is not available for this resource.";
-                //     }});
-
-                    // document.getElementById("consumptionInfo").innerHTML = consumptionString;
-/*
-                    hoverBox.append("div").text("Min Value " + adjustedTemp(dataRow.MinValue) + degreeSymbol + degree);
-            hoverBox.append("div").text("Avg Value " + adjustedTemp(dataRow.AvgValue) + degreeSymbol + degree);
-            hoverBox.append("div").text("Max Value " + adjustedTemp(dataRow.MaxValue) + degreeSymbol + degree);
-*/
-                // });
-                
-            // .attr("transform", function(d) { return "translate(" +  + ",0)"; });
 
 
             /*************/
