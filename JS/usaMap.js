@@ -409,7 +409,6 @@ const geoData = async () => {
         .attr("class", "slider")
         .attr("id", "month")
         .style("width", "660px")
-        .style("margin", "5px 25px 0")
         .attr("min", 0)
         .attr("max", 11)
         .attr("value", 0)
@@ -498,6 +497,12 @@ const geoData = async () => {
 
         svgGen.selectAll("text").remove();
         svgGen.selectAll("g").remove();
+
+        d3.select("#coal").text("Coal:0 Short Tons,");
+        d3.select("#gas").text("Natural Gas:0 Mcf,");
+        d3.select("#petrol").text("Petroleum:0 Barrels");
+
+        d3.select("#consumed").text("Consumed for the State of ");
     }    
 
     function updateGraphs(activeYear, activeMonth) {
@@ -530,11 +535,44 @@ const geoData = async () => {
             /* Bar graph */
             /*************/
 
+            var coal = "Coal:"
+            var coalN = "0";
+            var coalU = " Short Tons,";
+            var gas= "Natural Gas:"
+            var gasN = "0";
+            var gasU = " Mcf,";
+            var petrol = "Petroleum:"
+            var petrolN = "0";
+            var petrolU = " Barrels";
 
             var activeDataBar = activeData.filter(d => d['MONTH'] === activeMonth
             && d['ENERGY_SOURCE'] !== 'Total');
-            // console.log(activeDataBar);
+             console.log(activeDataBar);
 
+             var coalP = d3.precisionPrefix(1e4, 1.3e6);
+             var coalF = d3.formatPrefix("." + coalP, 1.3e6);
+
+             activeDataBar.forEach(d => {
+                 if (d.ENERGY_SOURCE === "Coal"){
+                    coalN = coalF(d.CONSUMPTION);
+                 }
+                 else if (d.ENERGY_SOURCE === "Natural Gas"){
+                    gasN = coalF(d.CONSUMPTION);
+                 }
+                 else if (d.ENERGY_SOURCE === "Petroleum"){
+                    petrolN = coalF(d.CONSUMPTION);
+                 }
+             });
+
+             
+             d3.select("#consumed").text("Consumed for the State of "+idToState[activeState.attr("ident")]);
+             d3.select("#coal").text(coal+coalN+coalU);
+             d3.select("#gas").text(gas+gasN+gasU);
+             d3.select("#petrol").text(petrol+petrolN+petrolU);
+
+            //  console.log(d3.select("#coal").text(coalN+coalU)); 
+            //  console.log(d3.select("#gas").text(gasN+gasU)); 
+            //  console.log(d3.select("#petrol").text(petrolN+petrolU)); 
             //scales
             // y scale
 
@@ -601,6 +639,9 @@ const geoData = async () => {
 
           //  let barColorScale = d3.scaleOrdinal(d3.schemeCategory20);
 
+
+
+
             var xAxisOffsetBar =  16; //Not sure how to calculate given our variables and parameters
             var consumptionString;
             var bar = svgType.selectAll(".bar")
@@ -617,6 +658,11 @@ const geoData = async () => {
                 .attr("id", d => d.ENERGY_SOURCE)
                 .attr("width", 30)
                 .attr("height", function(d) { return typeChartHeight + 30 - mwScale(d.GENERATION) });
+
+            //  function (d) {
+            //      console.log(d.CONSUMPTION);
+            //  }
+           
                 // .on("mouseover", function(d){
                 //     console.log("hover");
                 //     document.getElementById(d.ENERGY_SOURCE).style.opacity = .7;
@@ -637,7 +683,7 @@ const geoData = async () => {
                 //     }else{
 
                 //         consumptionString = "Consumption data is not available for this resource.";
-                //     }
+                //     }});
 
                     // document.getElementById("consumptionInfo").innerHTML = consumptionString;
 /*

@@ -9,10 +9,7 @@
 
 
   <link rel="stylesheet" type="text/css" href="CSS/mapStyle.css">
-<<<<<<< HEAD
   <!-- <link rel="stylesheet" type="text/css" href="CSS/graphStyle.css"> -->
-=======
->>>>>>> 8cd6c618e32ad2b0a2e4bd99c5b217ee49ac4907
 </head>
 
 <header>
@@ -27,6 +24,13 @@
         <h2> US Weather Map </h2>
         <svg id="usa" height="500" width="550" style="border:1px solid black"></svg>
         <svg id="usaMapLegend" height="60" width="450"></svg>
+        <!-- <svg id="consumptionInfo" height="100" width="550" style="border:1px solid black"></svg> -->
+        <div id = "consumptionInfo" style="border:1px solid black; width: 550px">
+          <h2 id="consumed">Consumed for the State of</h2>
+          <h4 id="coal" style="display: inline-block">Coal:0 Short Tons,</h4>
+          <h4 id="gas" style="display: inline-block">Natural Gas:0 Mcf,</h4>
+          <h4 id="petrol" style="display: inline-block">Petroleum:0 Barrels </h4>
+        </div>
       </div>
         <!-- display values -->
       <div class="column right">
@@ -63,17 +67,17 @@
           <div id="dropdown"></div>
 
     <!-- line graph -->
-            <h2> Line chart for Yearly Generation</h2>
-            <svg id="yearlyGeneration" height="350" width="550"></svg>
+            <h2 id="lineHead"> Line chart for Yearly Generation</h2>
+            <svg id="yearlyGeneration" height="350" width="550" style="border:1px solid black"></svg></svg>
         </div>
 
     </div>
 
     <!-- bar graph -->
+   
         <div class="box2">
             <h2> Bar chart for type of producer</h2>
-            <p id="consumptionInfo"></p>
-            <svg id="producerType" height="500" width="1200"></svg>
+            <svg id="producerType" height="500" width="1200" style="border:1px solid black"></svg></svg>
         </div>
 
 
@@ -86,7 +90,7 @@
 <footer>
   <p> 
     INFO5100 Class Project, Copyright &copy; 2019 <br>
-    Yejeong Choi Justin Joco Noah Sterling
+    Yejeong Choi, Justin Joco, Noah Sterling
   </p>
         
 </footer>

@@ -7,7 +7,20 @@ header {
   color:rgb(97, 183, 202);
 }
 
+#month {
+  display: inline-block;
+  /* float: left; */
+}
 
+#year {
+  display: inline-block;
+  /* float: left; */
+  /* padding-left: 8px; */
+}
+
+#state {
+  display: inline-block;
+}
 
 
 /* Body */
@@ -89,6 +102,10 @@ button:hover {
 
 /* slider */
 
+#month.slider {
+
+}
+
 .slider-labels{
   display: right;
   margin: 0px -41px 0;
@@ -146,7 +163,7 @@ button:hover {
 .box2 {
   position: static;
   display: block;
-  padding: 5%;
+  text-align: center;
 
 
 }
@@ -170,6 +187,10 @@ button:hover {
   /* float: left; */
 }
 
+#consumptionInfo{
+  display: block;
+}
+
 /* .bar {
   fill: #B1AFCD;
 } */
@@ -186,6 +207,8 @@ button:hover {
   stroke-width: 2px;
 }
 
+#lineHead {
+}
 
 /* footer */
 footer {
