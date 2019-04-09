@@ -523,6 +523,7 @@ const geoData = async () => {
     function updateGraphs(activeYear, activeMonth) {
         
         clearGraphs();
+
         
         if (activeState !== undefined) {
 
@@ -808,47 +809,51 @@ const geoData = async () => {
             drawActiveMonth(month, prevMonthID, month_value-1);
 
             svgGen.on("mousemove", function(d){
-                let [x, y] = d3.mouse(this);
-                console.log(x);
-                
-                if (x <= 80) {
-                    x = 80;
+                if (activeState!==undefined){
+                    let [x, y] = d3.mouse(this);
+                    console.log(x);
+                     console.log(activeState);
+                    
+                    if (x <= 80) {
+                        x = 80;
+                    }
+                    else if (x>=521){ 
+                        x = 521;
+                    }
+                    else{
+                        svgGen.select("#line").remove();        
+                        svgGen.append("line")
+                        .style("stroke","red")
+                        .attr("id", "line")
+                        .attr("x1", x)
+                        .attr("x2", x)
+                        .attr("y1", 0)
+                        .attr("y2", genChartHeight +30);
+
+                    }
                 }
-                else if (x>=521){ 
-                    x = 521;
-                }
-                else{
-                    svgGen.select("#line").remove();        
-                    svgGen.append("line")
-                    .style("stroke","red")
-                    .attr("id", "line")
-                    .attr("x1", x)
-                    .attr("x2", x)
-                    .attr("y1", 0)
-                    .attr("y2", genChartHeight +30);
-                }
-                
             });
             svgGen.on("mouseleave",function(d){
-                svgGen.select("#line").remove();
+                svgGen.selectAll("#line").remove();
              
             });
 
             svgGen.on("click",function(d){
-                let [x, y] = d3.mouse(this);
-                let distanceArr = monthTickArray.map(function(value){return Math.abs(value - x);});
-                let closestMonth = distanceArr.indexOf(Math.min(...distanceArr));
-              
-                prevMonthID = month;
-                month = months[closestMonth];
-                month_text.innerHTML = month;
-                month_value = closestMonth+1;
-               
-                activeSlider.value = closestMonth;
-                
-                updateMap(year_value, month_value);
-                updateGraphs(year_value, month_value);
-
+                if (activeState!==undefined){
+                    let [x, y] = d3.mouse(this);
+                    let distanceArr = monthTickArray.map(function(value){return Math.abs(value - x);});
+                    let closestMonth = distanceArr.indexOf(Math.min(...distanceArr));
+                  
+                    prevMonthID = month;
+                    month = months[closestMonth];
+                    month_text.innerHTML = month;
+                    month_value = closestMonth+1;
+                   
+                    activeSlider.value = closestMonth;
+                    
+                    updateMap(year_value, month_value);
+                    updateGraphs(year_value, month_value);
+                }
             });
 
             function drawActiveMonth(month_id, prevMonthID, currMonth){
