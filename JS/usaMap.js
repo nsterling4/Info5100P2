@@ -651,7 +651,7 @@ const geoData = async () => {
             // y scales -> Energy Generated
             const genMin = d3.min(activeDataLine, d => d['GENERATION']);
             const genMax = d3.max(activeDataLine, d => d['GENERATION']);
-            const genScale = d3.scaleLinear().domain([genMin, genMax]).range([genChartHeight, 30]);
+            const genScale = d3.scaleLinear().domain([genMin, genMax]).range([genChartHeight, 40]);
 
 
             //Create an offset to correctly place d3 line over axes
