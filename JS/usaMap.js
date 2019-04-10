@@ -76,7 +76,7 @@ const geoData = async () => {
 
     console.log(fulldata);
 
- 
+
 
     let display = "AvgValue";
     let minButton = d3.select("button#MinValue");
@@ -89,7 +89,7 @@ const geoData = async () => {
 
     let displayButton = d3.select("#" + display);
     displayButton.attr("disabled", "null");
-    displayValue.text("Displaying: " + displayButton.text());
+    displayValue.text("Map displays " + displayButton.text().toUpperCase() + " in " + String.fromCharCode(176) + degree + " for the selected time period");
 
     minButton.on("click", function () {
         setDisplayButton("MinValue");
@@ -115,16 +115,18 @@ const geoData = async () => {
 
     function setDisplayButton(newDisplay) {
         activeState = undefined;
-        d3.select("h2#state").text("");
+        d3.select("h2#state").text("SELECT STATE FROM MAP");
         displayButton = d3.select("#" + display);
         displayButton.attr("disabled", null);
         display = newDisplay;
         displayButton = d3.select("#" + display);
         displayButton.attr("disabled", "true");
         // displayValue.text("Displaying: "+display);
-        displayValue.text("Displaying: " + displayButton.text());
+        displayValue.text("Map displays " + displayButton.text().toUpperCase() + " in " + String.fromCharCode(176) + degree + " for the selected time period");
         updateMap(year_value, month_value);
+        updateGraphs(year_value, month_value);
         clearGraphs();
+        d3.select("#temp").text("");
     }
 
     function setUint() {
@@ -137,6 +139,11 @@ const geoData = async () => {
             c.attr("disabled", null);
             degree = "F";
         }
+        if (activeState !== undefined) {
+            d3.select("h2#temp").text(adjustedTemp((activeData[stateToData[idToState[activeState.attr("ident")]]])[display]) + String.fromCharCode(176) + degree);
+        }
+        displayValue.text("Map displays " + displayButton.text().toUpperCase() + " in " + String.fromCharCode(176) + degree + " for the selected time period");
+
     }
 
     function adjustedTemp(temp) {
@@ -198,7 +205,7 @@ const geoData = async () => {
         // console.log(activeState);   
         if (activeState !== undefined) {
             activeState.style("fill", "honeydew");
-            
+
         }
 
 
@@ -211,6 +218,8 @@ const geoData = async () => {
         var hoveBoxWidth = parseFloat(hoverBox.style("width"));
         var hoverBoxHeight = parseFloat(hoverBox.style("height"));
 
+        var degreeSymbol = String.fromCharCode(176);
+
         function mouseClickPlot() {
             activeState = undefined;
             updateMap(year_value, month_value);
@@ -218,6 +227,7 @@ const geoData = async () => {
             activeState.style("fill", "honeydew");
             console.log(idToState[activeState.attr("ident")]);
             d3.select("h2#state").text(idToState[activeState.attr("ident")]);
+            d3.select("h2#temp").text(adjustedTemp((activeData[stateToData[idToState[activeState.attr("ident")]]])[display]) + degreeSymbol + degree);
             map.selectAll(".state").attr("opacity", 1);
             updateGraphs(year_value, month_value);
         }
@@ -233,7 +243,6 @@ const geoData = async () => {
 
             let state = d3.select(this);
             let dataRow = activeData[stateToData[idToState[state.attr("ident")]]];
-            let degreeSymbol = String.fromCharCode(176);
             hoverBox.append("div").text(idToState[state.attr("ident")]);
             hoverBox.append("div").text("Min Value " + adjustedTemp(dataRow.MinValue) + degreeSymbol + degree);
             hoverBox.append("div").text("Avg Value " + adjustedTemp(dataRow.AvgValue) + degreeSymbol + degree);
@@ -245,7 +254,7 @@ const geoData = async () => {
                 prevState.attr("opacity", 1);
                 prevState = state;
             } else {
-                
+
                 if (activeState == undefined || (idToState[state.attr("ident")] !== idToState[activeState.attr("ident")])) {
                     state.attr("opacity", .7)
                 };
@@ -293,7 +302,7 @@ const geoData = async () => {
 
         legendBox.html("");
 
-   
+
         legendBox.append("g")
             .attr("class", "legendAxis")
             .style("stroke", "white")
@@ -316,8 +325,9 @@ const geoData = async () => {
     //https://jeffrz.github.io/info3300-spr2019/notes/19.03.11.notes.htm
 
 
-    var years = [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 
-        2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018];
+    var years = [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+        2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018
+    ];
 
     let default_year = 2001;
     let default_month = 1;
@@ -325,11 +335,11 @@ const geoData = async () => {
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     var month = months[default_month - 1];
     var prevMonthID = month;
-    var slidersDiv = d3.select("#sliders").append("div"); 
+    var slidersDiv = d3.select("#sliders").append("div");
 
     var month_text = document.getElementById("month");
 
-    var dropdownDiv = d3.select("#dropdown").append("select");
+    var dropdownDiv = d3.select("#dropdown").append("select").style("cursor", "pointer");
 
 
     var year_text = document.getElementById("year");
@@ -343,7 +353,7 @@ const geoData = async () => {
     month_text.innerHTML = months[month_value - 1];
 
 
-   
+
     years.forEach(function (d, i) {
         dropdownDiv.append("option")
             .text(d)
@@ -360,8 +370,8 @@ const geoData = async () => {
     });
 
 
-   
-    slidersDiv.append("div").text("Month");
+
+
     slidersDiv.append("div")
         .append("input")
         .attr("type", "range")
@@ -370,11 +380,12 @@ const geoData = async () => {
         .style("width", "660px")
         .attr("min", 0)
         .attr("max", 11)
-        .attr("onload", function(){
+        .style("cursor", "pointer")
+        .attr("onload", function () {
             console.log(this);
             this.value = 0;
             activeSlider = this;
-           
+
         })
         .on("input", function () {
             console.log(this);
@@ -382,21 +393,21 @@ const geoData = async () => {
             console.log(this.value);
 
             prevMonthID = month;
-               
+
             month = months[this.value];
             month_value = Number(this.value) + 1;
             month_text.innerHTML = month;
             updateMap(year_value, month_value);
             updateGraphs(year_value, month_value);
-           
-        
+
+
 
         });
-   
+
 
     updateMap(default_year, default_month);
 
-   
+
 
     /****** Bar Graph *******/
     var svgType = d3.select("#producerType"); // bar graph
@@ -422,7 +433,7 @@ const geoData = async () => {
     // import data
     let energyData = await d3.csv("Data/CombinedEnergy.csv", d3.autoType);
 
- 
+
 
 
     var cleanData = energyData.filter(d => d['GENERATION'] !== NaN &&
@@ -430,7 +441,7 @@ const geoData = async () => {
         d['GENERATION'].length !== 0);
 
     function clearGraphs() {
-        
+
         svgType.selectAll("text").remove();
         svgType.selectAll("g").remove();
         svgType.selectAll(".bar").remove();
@@ -440,18 +451,19 @@ const geoData = async () => {
         svgGen.selectAll("g").remove();
         svgGen.selectAll(".bar").remove();
 
-        d3.select("#coal").text("Coal:0 Short Tons,");
-        d3.select("#gas").text("Natural Gas:0 Mcf,");
-        d3.select("#petrol").text("Petroleum:0 Barrels");
+        d3.select("#coal").text("Coal: 0 Short Tons");
+        d3.select("#gas").text("Natural Gas: 0 Mcf");
+        d3.select("#petrol").text("Petroleum: 0 Barrels");
 
-        d3.select("#consumed").text("Consumed for the State of ");
-    }    
+    }
 
     function updateGraphs(activeYear, activeMonth) {
-        
+
         clearGraphs();
 
-        
+        d3.select("#barHead").text(" Fuel Types for SELECT STATE ABOVE for " + months[(activeMonth-1)]+ " " + activeYear);
+        d3.select("#consumed").text(months[(activeMonth-1)]+ " Fuel Usage for SELECT STATE ABOVE");
+        d3.select("#lineHead").text("Energy Generation for SELECT STATE FROM MAP for " + activeYear);
         if (activeState !== undefined) {
 
 
@@ -462,44 +474,47 @@ const geoData = async () => {
 
 
 
+
+
             /*************/
             /* Bar graph */
             /*************/
 
-            var coal = "Coal:"
+            var coal = "Coal: "
             var coalN = "0";
-            var coalU = " Short Tons,";
-            var gas= "Natural Gas:"
+            var coalU = " Short Tons";
+            var gas = "Natural Gas: "
             var gasN = "0";
-            var gasU = " Mcf,";
-            var petrol = "Petroleum:"
+            var gasU = " Mcf";
+            var petrol = "Petroleum: "
             var petrolN = "0";
             var petrolU = " Barrels";
 
-            var activeDataBar = activeData.filter(d => d['MONTH'] === activeMonth
-            && d['ENERGY_SOURCE'] !== 'Total');
-             console.log(activeDataBar);
+            var activeDataBar = activeData.filter(d => d['MONTH'] === activeMonth &&
+                d['ENERGY_SOURCE'] !== 'Total');
+            console.log(activeDataBar);
 
-             var coalP = d3.precisionPrefix(1e4, 1.3e6);
-             var coalF = d3.formatPrefix("." + coalP, 1.3e6);
+            var coalP = d3.precisionPrefix(1e4, 1.3e6);
+            var coalF = d3.formatPrefix("." + coalP, 1.3e6);
 
-             activeDataBar.forEach(d => {
-                 if (d.ENERGY_SOURCE === "Coal"){
+            activeDataBar.forEach(d => {
+                if (d.ENERGY_SOURCE === "Coal") {
                     coalN = coalF(d.CONSUMPTION);
-                 }
-                 else if (d.ENERGY_SOURCE === "Natural Gas"){
+                } else if (d.ENERGY_SOURCE === "Natural Gas") {
                     gasN = coalF(d.CONSUMPTION);
-                 }
-                 else if (d.ENERGY_SOURCE === "Petroleum"){
+                } else if (d.ENERGY_SOURCE === "Petroleum") {
                     petrolN = coalF(d.CONSUMPTION);
-                 }
-             });
+                }
+            });
 
-             
-             d3.select("#consumed").text("Consumed for the State of "+idToState[activeState.attr("ident")]);
-             d3.select("#coal").text(coal+coalN+coalU);
-             d3.select("#gas").text(gas+gasN+gasU);
-             d3.select("#petrol").text(petrol+petrolN+petrolU);
+
+
+            d3.select("#lineHead").text("Energy Generation for " + idToState[activeState.attr("ident")] + " for " + activeYear);
+            d3.select("#barHead").text(" Fuel Types for " + idToState[activeState.attr("ident")] + " for " + months[(activeMonth-1)]+ " " + activeYear);
+            d3.select("#consumed").text(months[(activeMonth-1)]+ " Fuel Usage for " + idToState[activeState.attr("ident")]);
+            d3.select("#coal").text(coal + coalN + coalU);
+            d3.select("#gas").text(gas + gasN + gasU);
+            d3.select("#petrol").text(petrol + petrolN + petrolU);
 
             //  console.log(d3.select("#coal").text(coalN+coalU)); 
             //  console.log(d3.select("#gas").text(gasN+gasU)); 
@@ -519,21 +534,21 @@ const geoData = async () => {
 
             //x scale
             var typeScale = d3.scaleBand()
-                .rangeRound([margin.left, typeChartWidth+30])
+                .rangeRound([margin.left, typeChartWidth + 30])
                 .padding(0.4)
                 .domain(activeDataBar.map(function (d) {
                     return d['ENERGY_SOURCE'];
                 }));
 
-           
-          
+
+
             var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
             // axis
             // y axis
             var p = d3.precisionPrefix(1e5, 1.3e6);
             var f = d3.formatPrefix("." + p, 1.3e6);
 
-            var mwAxis = d3.axisLeft(mwScale).tickFormat(d => f(d).slice(0,-1));
+            var mwAxis = d3.axisLeft(mwScale).tickFormat(d => f(d).slice(0, -1));
             svgType.append("g")
                 .attr("class", "left axis")
                 .attr("transform", "translate(" + (margin.left) + "," + (margin.top - 10) + ")")
@@ -568,16 +583,16 @@ const geoData = async () => {
 
             //bar
 
-        
 
-            var xAxisOffsetBar =  16; //Not sure how to calculate given our variables and parameters
+
+            var xAxisOffsetBar = 16; //Not sure how to calculate given our variables and parameters
             var consumptionString;
             var bar = svgType.selectAll(".bar")
                 .data(activeDataBar)
                 .enter().append("rect")
                 .attr("class", "bar")
-                .attr("fill",d => colorScale(d["ENERGY_SOURCE"]))
-                .attr("x", function (d) {   
+                .attr("fill", "rgb(97, 183, 202)")
+                .attr("x", function (d) {
                     return typeScale(d.ENERGY_SOURCE) + xAxisOffsetBar;
                 })
                 .attr("y", function (d) {
@@ -585,9 +600,11 @@ const geoData = async () => {
                 })
                 .attr("id", d => d.ENERGY_SOURCE)
                 .attr("width", 30)
-                .attr("height", function(d) { return typeChartHeight + 30 - mwScale(d.GENERATION) });
+                .attr("height", function (d) {
+                    return typeChartHeight + 30 - mwScale(d.GENERATION)
+                });
 
-           
+
 
 
             /*************/
@@ -619,9 +636,9 @@ const geoData = async () => {
 
             // console.log(genMin);
             // console.log(genMax);
-            var xAxisOffsetLine =  120; 
+            var xAxisOffsetLine = 120;
             // y axis
-            var genAxis = d3.axisLeft(genScale).tickFormat(d => f(d).slice(0,-1));
+            var genAxis = d3.axisLeft(genScale).tickFormat(d => f(d).slice(0, -1));
             svgGen.append("g")
                 .attr("class", "left axis")
                 .attr("transform", "translate(" + (margin.left) + "," + margin.top + ")")
@@ -633,15 +650,15 @@ const geoData = async () => {
             svgGen.append("g")
                 .attr("class", "bottom axis")
                 .attr("transform", "translate(80," + (genChartHeight + 30) + ")")
-                .call(monthAxis).selectAll(".tick").each(function(data){
+                .call(monthAxis).selectAll(".tick").each(function (data) {
 
-                 var tick = d3.select(this);
-                 var string = tick.attr("transform");
-                 var translate = string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",");
-               
-                  monthTickArray.push(Number(translate[0]) + 80);
+                    var tick = d3.select(this);
+                    var string = tick.attr("transform");
+                    var translate = string.substring(string.indexOf("(") + 1, string.indexOf(")")).split(",");
+
+                    monthTickArray.push(Number(translate[0]) + 80);
                 });
-          
+
             console.log(monthTickArray);
 
             // x label
@@ -665,9 +682,9 @@ const geoData = async () => {
 
             // draw line
             //Not sure how to calculate given our variables and parameters
-           // console.log(svgGenWidth);
-            
-           
+            // console.log(svgGenWidth);
+
+
             var line = d3.line()
                 .x(function (d, i) {
                     return monthScale(i) + xAxisOffsetLine;
@@ -677,79 +694,81 @@ const geoData = async () => {
                 })
                 //.curve(d3.curveBasis);
                 .curve(d3.curveCardinal);
-                //.curve(d3.curveMonotoneX);
+            //.curve(d3.curveMonotoneX);
 
             svgGen.append("path")
                 .datum(activeDataLine)
                 .attr("class", "line")
                 .attr('d', line);
 
-            drawActiveMonth(month, prevMonthID, month_value-1);
+            drawActiveMonth(month, prevMonthID, month_value - 1);
 
-            svgGen.on("mousemove", function(d){
-                if (activeState!==undefined){
+            svgGen.on("mousemove", function (d) {
+                if (activeState !== undefined) {
                     let [x, y] = d3.mouse(this);
                     console.log(x);
-                     console.log(activeState);
-                    
+                    console.log(activeState);
+
                     if (x <= 80) {
                         x = 80;
-                    }
-                    else if (x>=521){ 
+                    } else if (x >= 521) {
                         x = 521;
-                    }
-                    else{
-                        svgGen.select("#line").remove();        
+                    } else {
+                        svgGen.select("#line").remove();
                         svgGen.append("line")
-                        .style("stroke","red")
-                        .attr("id", "line")
-                        .attr("x1", x)
-                        .attr("x2", x)
-                        .attr("y1", 0)
-                        .attr("y2", genChartHeight +30);
+                            .style("stroke", "red")
+                            .attr("id", "line")
+                            .attr("x1", x)
+                            .attr("x2", x)
+                            .attr("y1", 0)
+                            .attr("y2", genChartHeight + 30);
 
                     }
                 }
             });
-            svgGen.on("mouseleave",function(d){
+            svgGen.on("mouseleave", function (d) {
                 svgGen.selectAll("#line").remove();
-             
+
             });
 
-            svgGen.on("click",function(d){
-                if (activeState!==undefined){
+            svgGen.on("click", function (d) {
+                if (activeState !== undefined) {
                     let [x, y] = d3.mouse(this);
-                    let distanceArr = monthTickArray.map(function(value){return Math.abs(value - x);});
+                    let distanceArr = monthTickArray.map(function (value) {
+                        return Math.abs(value - x);
+                    });
                     let closestMonth = distanceArr.indexOf(Math.min(...distanceArr));
-                  
+
                     prevMonthID = month;
                     month = months[closestMonth];
                     month_text.innerHTML = month;
-                    month_value = closestMonth+1;
-                   
+                    month_value = closestMonth + 1;
+
                     activeSlider.value = closestMonth;
-                    
+
                     updateMap(year_value, month_value);
                     updateGraphs(year_value, month_value);
                 }
             });
 
-            function drawActiveMonth(month_id, prevMonthID, currMonth){
-                 console.log(prevMonthID);
-                 d3.select("#" + prevMonthID).remove();
-                 svgGen.append("rect")
+            function drawActiveMonth(month_id, prevMonthID, currMonth) {
+                console.log(prevMonthID);
+                d3.select("#" + prevMonthID).remove();
+                svgGen.append("rect")
                     .attr("class", "bar")
                     .attr("fill", "black")
                     .style("opacity", .4)
-                    .attr("x", function () {   
-                        return monthScale(currMonth)-20 + xAxisOffsetLine;
+                    .attr("x", function () {
+                        return monthScale(currMonth) - 20 + xAxisOffsetLine;
                     })
                     .attr("y", function () {
                         return 0;
                     })
                     .attr("id", month_id)
                     .attr("width", 40)
-                    .attr("height", function(d) { return genChartHeight +30 });
+                    .attr("height", function (d) {
+                        return genChartHeight + 30
+                    });
 
 
             }

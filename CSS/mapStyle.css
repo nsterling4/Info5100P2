@@ -2,7 +2,7 @@
 
 header {
   /* background-color: #F9FAF5; */
-  padding: 30px 0 30px 0;
+  padding: 15px 0 15px 0;
   font-family: monospace;
   color:rgb(97, 183, 202);
 }
@@ -199,6 +199,7 @@ button:hover {
 #yearlyGeneration{
   background-color: #F3E4E7;
   /* float: right; */
+  cursor: pointer;
 }
 
 .line {
@@ -207,8 +208,7 @@ button:hover {
   stroke-width: 2px;
 }
 
-#lineHead {
-}
+
 
 /* footer */
 footer {

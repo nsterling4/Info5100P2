@@ -13,7 +13,7 @@
 </head>
 
 <header>
-  <h1 align="center"> Changes in Weather and Energy Generation in US</h1>
+  <h1 align="center"> Changes in Weather and Energy Generation in the United States of America</h1>
 </header>
 
 <body>
@@ -21,15 +21,16 @@
     <div class="row">
       <!-- map with legend -->
       <div class="column left">
-        <h2> US Weather Map </h2>
+        <h2 style="margin-top: 0px"> United States Weather Map </h2>
+        <p id="displayValue" style="color:#B1AFCD"></p>
         <svg id="usa" height="500" width="550" style="border:1px solid black"></svg>
         <svg id="usaMapLegend" height="60" width="450"></svg>
         <!-- <svg id="consumptionInfo" height="100" width="550" style="border:1px solid black"></svg> -->
         <div id = "consumptionInfo" style="border:1px solid black; width: 550px">
-          <h2 id="consumed">Consumed for the State of</h2>
-          <h4 id="coal" style="display: inline-block">Coal:0 Short Tons,</h4>
-          <h4 id="gas" style="display: inline-block">Natural Gas:0 Mcf,</h4>
-          <h4 id="petrol" style="display: inline-block">Petroleum:0 Barrels </h4>
+          <h2 id="consumed" style="text-align: center">January Fuel Usage for SELECT STATE ABOVE</h2>
+          <h3 id="coal" style="float: left; padding: 0px 20px 0px 20px">Coal: 0 Short Tons</h3>
+          <h3 id="gas" style="float: right; padding: 0px 20px 0px 20px">Natural Gas: 0 Mcf</h3> <br><br>
+          <h3 id="petrol" style="text-align: center">Petroleum: 0 Barrels </h3>
         </div>
       </div>
         <!-- display values -->
@@ -44,11 +45,16 @@
               <button type="button" id="C">&#8451;</button>
           </div>
 
-          <p id="displayValue" style="color:#B1AFCD"></p>
-          <h2 id="month"></h2>
-          <h2 id="year"></h2>
-          <h2 id="state" style="color:#B1AFCD"></h2>
+          
+          <h2 id="month" style="margin-top: 20px; font-size: 25px;"></h2>
+          <h2 id="year" style="margin-top: 20px; font-size: 25px;"></h2>
+          <h2 id="state" style="color:rgb(97, 183, 202); font-size: 30px; margin: 0px 0px 0px 25px">SELECT STATE FROM MAP</h2>
+          <h2 id="temp" style="display: inline-block; font-size: 30px; margin: 0px; color:rgb(97, 183, 202)"></h2>
 
+          <br>
+          <div style="display: inline-block">Month</div>
+          <div style="display: inline-block; margin-left: 20px">Year</div>
+          <div id="dropdown" style="display: inline-block"></div>
           <div id="sliders"></div>
               <ul class="slider-labels">
                   <li>Jan</li>
@@ -64,10 +70,10 @@
                   <li>Nov</li>
                   <li>Dec</li>
               </ul>
-          <div id="dropdown"></div>
+
 
     <!-- line graph -->
-            <h2 id="lineHead"> Line chart for Yearly Generation</h2>
+            <h2 id="lineHead" style="margin-top: 40px; text-align: center"> Energy Generation for SELECT STATE FROM MAP for 2001</h2>
             <svg id="yearlyGeneration" height="350" width="550" style="border:1px solid black"></svg></svg>
         </div>
 
@@ -76,8 +82,8 @@
     <!-- bar graph -->
    
         <div class="box2">
-            <h2> Bar chart for type of producer</h2>
-            <svg id="producerType" height="500" width="1200" style="border:1px solid black"></svg></svg>
+            <h2 id="barHead">Fuel Types for SELECT STATE ABOVE for January 2001</h2>
+            <svg id="producerType" height="500" width="1300" style="border:1px solid black"></svg></svg>
         </div>
 
 
