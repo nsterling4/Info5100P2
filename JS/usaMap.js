@@ -1,3 +1,5 @@
+
+//Create margins for US map SVG and get dimensions
 let usaMap = d3.select("#usa");
 let svgMapWidth = usaMap.attr("width");
 let svgMapHeight = usaMap.attr("height");
@@ -15,6 +17,7 @@ const map = usaMap.append("g")
 
 let degree = "F";
 
+//Declare values to be changed through interactivity
 var year_value;
 var month_value;
 var activeState;
@@ -23,6 +26,7 @@ let stateTemps = {};
 let idToState = {};
 let stateToData = {};
 
+//Create an activeSlider object and set its default value to 0 
 var activeSlider = {};
 activeSlider.value = 0;
 
@@ -30,16 +34,17 @@ const geoData = async () => {
 
     //Geo variables
     const usa = await d3.json("Data/us.json");
-    // console.log(usa);
+    
 
     const stateIDs = await d3.tsv("Data/us-state-names.tsv");
-    // console.log(stateIDs);
+  
 
 
 
 
     // Let's filter the dataset so we have only the lower 48 states
     let filteredStates = ['02', '15', '60', '66', '69', '72', '74', '78'];
+    
     // Loop through state geometries and filter by id (padding with leading zeroes because they are stored as ints in the json)
     usa.objects.states.geometries = usa.objects.states.geometries.filter(d => {
         return filteredStates.indexOf(d.id.toString().padStart(2, '0')) === -1;
@@ -71,12 +76,12 @@ const geoData = async () => {
         .attr("d", path);
 
 
-
+     //Get the entire data set
     let fulldata = await d3.csv("Data/combinedWeather.csv", d3.autoType);
 
     console.log(fulldata);
 
-
+    //Create our display buttons
 
     let display = "AvgValue";
     let minButton = d3.select("button#MinValue");
@@ -84,6 +89,7 @@ const geoData = async () => {
     let maxButton = d3.select("button#MaxValue");
     let displayValue = d3.select("#displayValue");
 
+    //Temperature buttons
     let f = d3.select("button#F");
     let c = d3.select("button#C");
 
@@ -91,6 +97,7 @@ const geoData = async () => {
     displayButton.attr("disabled", "null");
     displayValue.text("Map displays " + displayButton.text().toUpperCase() + " in " + String.fromCharCode(176) + degree + " for the selected time period");
 
+    //Change temperature to display based on button clicked
     minButton.on("click", function () {
         setDisplayButton("MinValue");
     });
@@ -103,15 +110,17 @@ const geoData = async () => {
         setDisplayButton("MaxValue");
     });
 
+    //Change units on map based on pressed temperature button
     f.on("click", function () {
         setUint();
         updateMap(year_value, month_value);
     });
-
     c.on("click", function () {
         setUint();
         updateMap(year_value, month_value);
     });
+
+
 
     function setDisplayButton(newDisplay) {
         activeState = undefined;
@@ -156,16 +165,17 @@ const geoData = async () => {
         }
     }
 
-
+    //Create box that would display temperature stats of a state on hover 
     var hoverBox = d3.select("body").append("div")
         .attr("class", "hoverBox")
         .style("opacity", 0);
 
-
+    //Update the US map to contain the temperature readings of all states relevant to a given month and year
     function updateMap(activeYear, activeMonth) {
+
+        //Filter data to only have that of the specified active year and month
         activeData = fulldata.filter(d => d['YEAR'] === activeYear && d['MONTH'] === activeMonth);
-        // console.log("DATA");
-        // console.log(activeData);
+       
 
 
 
@@ -175,17 +185,12 @@ const geoData = async () => {
             stateTemps[row.name] = 0;
             idToState[row.id] = row.name;
         });
-        // console.log(idToState);
-        // console.log(activeData);
-        // console.log(stateTemps);
-
-
+   
         activeData.forEach((row, i) => {
             stateTemps[row.STATE] = adjustedTemp(row[display]);
             stateToData[row.STATE] = i;
         });
-        // console.log(stateTemps);
-        // console.log(stateToData);
+        
 
 
 
@@ -201,8 +206,7 @@ const geoData = async () => {
         map.selectAll(".state")
             .style("fill", d => colorScale(stateTemps[idToState[d.id]]));
 
-        //console.log("activeState");    
-        // console.log(activeState);   
+        //Fill selected state to distinguish this state from the unselected ones
         if (activeState !== undefined) {
             activeState.style("fill", "honeydew");
 
@@ -218,7 +222,9 @@ const geoData = async () => {
         var hoveBoxWidth = parseFloat(hoverBox.style("width"));
         var hoverBoxHeight = parseFloat(hoverBox.style("height"));
 
+
         var degreeSymbol = String.fromCharCode(176);
+
 
         function mouseClickPlot() {
             activeState = undefined;
@@ -322,45 +328,55 @@ const geoData = async () => {
         }
 
     }
-    //https://jeffrz.github.io/info3300-spr2019/notes/19.03.11.notes.htm
+    
 
 
-    var years = [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
-        2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018
-    ];
+    //Create array of years 
+    var years = [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 
+        2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018];
 
+
+    //Set default month and year to January 2001
     let default_year = 2001;
     let default_month = 1;
 
+    //Create list of month names
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     var month = months[default_month - 1];
     var prevMonthID = month;
-    var slidersDiv = d3.select("#sliders").append("div");
 
+
+
+
+    //Select divs to put dropdown and slider
+    var slidersDiv = d3.select("#sliders").append("div"); 
     var month_text = document.getElementById("month");
 
+
     var dropdownDiv = d3.select("#dropdown").append("select").style("cursor", "pointer");
+
 
 
     var year_text = document.getElementById("year");
 
 
-
+    //Set initial values of year and month
     year_value = default_year;
     month_value = default_month;
-
     year_text.innerHTML = year_value;
     month_text.innerHTML = months[month_value - 1];
 
 
 
+    //Create options for each year in the dropdown
+
     years.forEach(function (d, i) {
         dropdownDiv.append("option")
             .text(d)
             .attr("value", d);
-
     });
 
+    //Update the map and graphs based on selected year
     dropdownDiv.on("input", function () {
         year_value = Number(this.value);
         year_text.innerHTML = year_value;
@@ -371,7 +387,9 @@ const geoData = async () => {
 
 
 
-
+    //Create month slider; updates the maps and graph based on given month
+    //If line and bar graphs have been drawn, slider changes the rectangle placement of selected month on line graph
+    slidersDiv.append("div").text("Month");
     slidersDiv.append("div")
         .append("input")
         .attr("type", "range")
@@ -398,13 +416,13 @@ const geoData = async () => {
             month_value = Number(this.value) + 1;
             month_text.innerHTML = month;
             updateMap(year_value, month_value);
-            updateGraphs(year_value, month_value);
 
-
+            updateGraphs(year_value, month_value);     
 
         });
 
 
+    //By default, draw US map with selected data of January 2001
     updateMap(default_year, default_month);
 
 
@@ -440,6 +458,7 @@ const geoData = async () => {
         d['GENERATION'] > 0 &&
         d['GENERATION'].length !== 0);
 
+    //Clear graphs of all drawn elements and reset the "consumed" textbox 
     function clearGraphs() {
 
         svgType.selectAll("text").remove();
@@ -457,16 +476,18 @@ const geoData = async () => {
 
     }
 
+    //Updates the line and bar graphs based on selected year nad month
     function updateGraphs(activeYear, activeMonth) {
 
+        //Reset the graphs
         clearGraphs();
 
         d3.select("#barHead").text(" Fuel Types for SELECT STATE ABOVE for " + months[(activeMonth-1)]+ " " + activeYear);
         d3.select("#consumed").text(months[(activeMonth-1)]+ " Fuel Usage for SELECT STATE ABOVE");
         d3.select("#lineHead").text("Energy Generation for SELECT STATE FROM MAP for " + activeYear);
+
+        //Do this only if a state has been selected
         if (activeState !== undefined) {
-
-
 
             var activeData = cleanData.filter(d =>
                 d['YEAR'] === activeYear &&
@@ -613,38 +634,38 @@ const geoData = async () => {
 
 
             var activeDataLine = activeData.filter(d => d['ENERGY_SOURCE'] === 'Total');
-            //console.log(activeDataLine);
+     
 
             const yearMin = d3.min(activeDataLine, d => d['YEAR']);
             const yearMax = d3.max(activeDataLine, d => d['YEAR']);
-            // console.log(yearMin);
-            // console.log(yearMax);
+        
 
 
-            //x month, y generation
+            //x scales --> Month
             const monthMin = d3.min(activeDataLine, d => d['MONTH']);
             const monthMax = d3.max(activeDataLine, d => d['MONTH']);
             const monthScale = d3.scaleLinear().domain([monthMin, monthMax]).range([0, genChartWidth - 50]);
 
-            //console.log(monthMin);
-            //console.log(monthMax);
+       
 
-            // y value
+            // y scales -> Energy Generated
             const genMin = d3.min(activeDataLine, d => d['GENERATION']);
             const genMax = d3.max(activeDataLine, d => d['GENERATION']);
-            const genScale = d3.scaleLinear().domain([genMin, genMax]).range([genChartHeight, 0]);
+            const genScale = d3.scaleLinear().domain([genMin, genMax]).range([genChartHeight, 30]);
 
-            // console.log(genMin);
-            // console.log(genMax);
-            var xAxisOffsetLine = 120;
-            // y axis
-            var genAxis = d3.axisLeft(genScale).tickFormat(d => f(d).slice(0, -1));
+
+            //Create an offset to correctly place d3 line over axes
+            var xAxisOffsetLine =  130; 
+           
+
+            //Create y axis
+            var genAxis = d3.axisLeft(genScale).tickFormat(d => f(d).slice(0,-1));
             svgGen.append("g")
                 .attr("class", "left axis")
-                .attr("transform", "translate(" + (margin.left) + "," + margin.top + ")")
+                .attr("transform", "translate(" + (margin.left) + "," + 0 + ")")
                 .call(genAxis);
 
-            // x axis
+            // Create x axis and get array of x pixel locations of the month ticks
             var monthAxis = d3.axisBottom(monthScale);
             var monthTickArray = [];
             svgGen.append("g")
@@ -652,11 +673,13 @@ const geoData = async () => {
                 .attr("transform", "translate(80," + (genChartHeight + 30) + ")")
                 .call(monthAxis).selectAll(".tick").each(function (data) {
 
-                    var tick = d3.select(this);
-                    var string = tick.attr("transform");
-                    var translate = string.substring(string.indexOf("(") + 1, string.indexOf(")")).split(",");
 
-                    monthTickArray.push(Number(translate[0]) + 80);
+                 var tick = d3.select(this);
+                 var string = tick.attr("transform");
+                 var translate = string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",");
+               
+
+                monthTickArray.push(Number(translate[0]) + 80);
                 });
 
             console.log(monthTickArray);
@@ -680,10 +703,9 @@ const geoData = async () => {
                 .attr("transform", "rotate(-90)")
                 .text("Generation(MWh)");
 
-            // draw line
-            //Not sure how to calculate given our variables and parameters
-            // console.log(svgGenWidth);
 
+            
+            //Create and draw curved line that shows energy generated
 
             var line = d3.line()
                 .x(function (d, i) {
@@ -692,29 +714,35 @@ const geoData = async () => {
                 .y(function (d) {
                     return genScale(d.GENERATION);
                 })
-                //.curve(d3.curveBasis);
                 .curve(d3.curveCardinal);
-            //.curve(d3.curveMonotoneX);
 
             svgGen.append("path")
                 .datum(activeDataLine)
                 .attr("class", "line")
                 .attr('d', line);
 
+
+            //Draw translucent box region over selected month on line graph
             drawActiveMonth(month, prevMonthID, month_value - 1);
 
             svgGen.on("mousemove", function (d) {
+                //Draw a vertical line cursor that follows mouse movement over the line graph
                 if (activeState !== undefined) {
+
                     let [x, y] = d3.mouse(this);
                     console.log(x);
                     console.log(activeState);
 
                     if (x <= 80) {
                         x = 80;
-                    } else if (x >= 521) {
-                        x = 521;
-                    } else {
-                        svgGen.select("#line").remove();
+
+                    }
+                    else if (x>=640){ 
+                        x = 640;
+                    }
+                    else{
+                        svgGen.select("#line").remove();        
+
                         svgGen.append("line")
                             .style("stroke", "red")
                             .attr("id", "line")
@@ -726,13 +754,17 @@ const geoData = async () => {
                     }
                 }
             });
-            svgGen.on("mouseleave", function (d) {
-                svgGen.selectAll("#line").remove();
 
+
+            //Line cursor disappears upon leaving the line graph SVG
+            svgGen.on("mouseleave",function(d){
+                svgGen.selectAll("#line").remove();
             });
 
-            svgGen.on("click", function (d) {
-                if (activeState !== undefined) {
+            //Change active month to the month closest to where the user clicked on the line chart. Draw box over selected month
+            //Update map and graphs accordingly
+            svgGen.on("click",function(d){
+                if (activeState!==undefined){
                     let [x, y] = d3.mouse(this);
                     let distanceArr = monthTickArray.map(function (value) {
                         return Math.abs(value - x);
@@ -751,10 +783,13 @@ const geoData = async () => {
                 }
             });
 
-            function drawActiveMonth(month_id, prevMonthID, currMonth) {
-                console.log(prevMonthID);
-                d3.select("#" + prevMonthID).remove();
-                svgGen.append("rect")
+
+            //Draws a box over the selected month on the line chart. Removes previously drawn boxes
+            function drawActiveMonth(month_id, prevMonthID, currMonth){
+                 console.log(prevMonthID);
+                 d3.select("#" + prevMonthID).remove();
+                 svgGen.append("rect")
+
                     .attr("class", "bar")
                     .attr("fill", "black")
                     .style("opacity", .4)
@@ -770,7 +805,6 @@ const geoData = async () => {
                         return genChartHeight + 30
                     });
 
-
             }
 
         }
@@ -784,5 +818,5 @@ const geoData = async () => {
 
 
 
-
+//Call geoData data promise
 geoData();
