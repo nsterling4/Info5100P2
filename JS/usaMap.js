@@ -406,9 +406,9 @@ const geoData = async () => {
 
         })
         .on("input", function () {
-            console.log(this);
+           // console.log(this);
             activeSlider = this;
-            console.log(this.value);
+            // console.log(this.value);
 
             prevMonthID = month;
 
@@ -503,7 +503,7 @@ const geoData = async () => {
 
             var coal = "Coal: "
             var coalN = "0";
-            var coalU = " Short Tons";
+            var coalU = " Million Short Tons";
             var gas = "Natural Gas: "
             var gasN = "0";
             var gasU = " Mcf";
@@ -515,16 +515,24 @@ const geoData = async () => {
                 d['ENERGY_SOURCE'] !== 'Total');
             console.log(activeDataBar);
 
+            var activeDataBarScale = activeData.filter(d => d['ENERGY_SOURCE'] !== 'Total');
+            console.log(activeDataBarScale);
+
+
+
             var coalP = d3.precisionPrefix(1e4, 1.3e6);
             var coalF = d3.formatPrefix("." + coalP, 1.3e6);
 
+            var petrolP = d3.precisionPrefix(1e4, 1.3e6);
+            var petrolF = d3.format(".03s");
+
             activeDataBar.forEach(d => {
                 if (d.ENERGY_SOURCE === "Coal") {
-                    coalN = coalF(d.CONSUMPTION);
+                    coalN = coalF(d.CONSUMPTION).slice(0,-1);
                 } else if (d.ENERGY_SOURCE === "Natural Gas") {
-                    gasN = coalF(d.CONSUMPTION);
+                    gasN = coalF(d.CONSUMPTION).slice(0,-1);
                 } else if (d.ENERGY_SOURCE === "Petroleum") {
-                    petrolN = coalF(d.CONSUMPTION);
+                    petrolN = petrolF(d.CONSUMPTION);
                 }
             });
 
@@ -543,15 +551,23 @@ const geoData = async () => {
             //scales
             // y scale
 
-
-            var mwMin = d3.min(activeDataBar, d => d['GENERATION']);
-            var mwMax = d3.max(activeDataBar, d => d['GENERATION']);
+            
+            var mwMin = d3.min(activeDataBarScale, d => d['GENERATION']);
+            var mwMax = d3.max(activeDataBarScale, d => d['GENERATION']);
             var mwScale = d3.scaleLinear()
                 .domain([mwMin, mwMax])
                 .range([typeChartHeight, 20]);
             // check the data
-            // console.log(mwMax);
-            // console.log(mwMin); //have negative values
+             console.log(mwMax);
+             console.log(mwMin); //have negative values
+
+
+            // y scales -> Energy Generated
+            // const genMin = d3.min(activeDataLine, d => d['GENERATION']);
+            // const genMax = d3.max(activeDataLine, d => d['GENERATION']);
+            // const genScale = d3.scaleLinear().domain([genMin, genMax]).range([genChartHeight, 40]);
+
+        
 
             //x scale
             var typeScale = d3.scaleBand()
@@ -646,12 +662,15 @@ const geoData = async () => {
             const monthMax = d3.max(activeDataLine, d => d['MONTH']);
             const monthScale = d3.scaleLinear().domain([monthMin, monthMax]).range([0, genChartWidth - 50]);
 
+    
        
 
             // y scales -> Energy Generated
             const genMin = d3.min(activeDataLine, d => d['GENERATION']);
             const genMax = d3.max(activeDataLine, d => d['GENERATION']);
             const genScale = d3.scaleLinear().domain([genMin, genMax]).range([genChartHeight, 40]);
+
+        
 
 
             //Create an offset to correctly place d3 line over axes
@@ -682,7 +701,7 @@ const geoData = async () => {
                 monthTickArray.push(Number(translate[0]) + 80);
                 });
 
-            console.log(monthTickArray);
+          //  console.log(monthTickArray);
 
             // x label
             svgGen.append("text")
@@ -730,8 +749,8 @@ const geoData = async () => {
                 if (activeState !== undefined) {
 
                     let [x, y] = d3.mouse(this);
-                    console.log(x);
-                    console.log(activeState);
+                    // console.log(x);
+                    // console.log(activeState);
 
                     if (x <= 80) {
                         x = 80;
@@ -786,7 +805,7 @@ const geoData = async () => {
 
             //Draws a box over the selected month on the line chart. Removes previously drawn boxes
             function drawActiveMonth(month_id, prevMonthID, currMonth){
-                 console.log(prevMonthID);
+                 //console.log(prevMonthID);
                  d3.select("#" + prevMonthID).remove();
                  svgGen.append("rect")
 
