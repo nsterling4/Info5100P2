@@ -558,8 +558,8 @@ const geoData = async () => {
                 .domain([mwMin, mwMax])
                 .range([typeChartHeight, 20]);
             // check the data
-             console.log(mwMax);
-             console.log(mwMin); //have negative values
+       //      console.log(mwMax);
+        //     console.log(mwMin); //have negative values
 
 
             // y scales -> Energy Generated
@@ -591,12 +591,23 @@ const geoData = async () => {
                 .attr("transform", "translate(" + (margin.left) + "," + (margin.top - 10) + ")")
                 .call(mwAxis);
 
-            // x axis
+            // x axis and get tick x positions
             var typeAxis = d3.axisBottom(typeScale);
+            var typeTickArray = [];
             svgType.append("g")
                 .attr("class", "bottom axis")
                 .attr("transform", "translate(5," + (typeChartHeight + 30) + ")")
-                .call(typeAxis);
+                .call(typeAxis).selectAll(".tick").each(function (data) {
+
+
+                     var tick = d3.select(this);
+                     var string = tick.attr("transform");
+                     var translate = string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",");
+                   
+
+                    typeTickArray.push(Number(translate[0])-10);
+                });
+                console.log("Tick: " + typeTickArray);
 
             // labels
             // x label
@@ -622,15 +633,18 @@ const geoData = async () => {
 
 
 
-            var xAxisOffsetBar = 16; //Not sure how to calculate given our variables and parameters
             var consumptionString;
+
+            //Draw bars on top of tick marks
             var bar = svgType.selectAll(".bar")
                 .data(activeDataBar)
                 .enter().append("rect")
                 .attr("class", "bar")
                 .attr("fill", "rgb(97, 183, 202)")
-                .attr("x", function (d) {
-                    return typeScale(d.ENERGY_SOURCE) + xAxisOffsetBar;
+                .attr("x", function (d,i) {
+                    console.log(d);
+                    console.log(typeTickArray[i]);
+                    return typeTickArray[i];
                 })
                 .attr("y", function (d) {
                     return mwScale(d.GENERATION);
@@ -693,12 +707,12 @@ const geoData = async () => {
                 .call(monthAxis).selectAll(".tick").each(function (data) {
 
 
-                 var tick = d3.select(this);
-                 var string = tick.attr("transform");
-                 var translate = string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",");
-               
+                     var tick = d3.select(this);
+                     var string = tick.attr("transform");
+                     var translate = string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",");
+                   
 
-                monthTickArray.push(Number(translate[0]) + 80);
+                    monthTickArray.push(Number(translate[0]) + 80);
                 });
 
           //  console.log(monthTickArray);
