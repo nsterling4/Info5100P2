@@ -545,13 +545,9 @@ const geoData = async () => {
             d3.select("#gas").text(gas + gasN + gasU);
             d3.select("#petrol").text(petrol + petrolN + petrolU);
 
-            //  console.log(d3.select("#coal").text(coalN+coalU)); 
-            //  console.log(d3.select("#gas").text(gasN+gasU)); 
-            //  console.log(d3.select("#petrol").text(petrolN+petrolU)); 
+          
             //scales
             // y scale
-
-            
             var mwMin = d3.min(activeDataBarScale, d => d['GENERATION']);
             var mwMax = d3.max(activeDataBarScale, d => d['GENERATION']);
             var mwScale = d3.scaleLinear()
@@ -562,12 +558,7 @@ const geoData = async () => {
         //     console.log(mwMin); //have negative values
 
 
-            // y scales -> Energy Generated
-            // const genMin = d3.min(activeDataLine, d => d['GENERATION']);
-            // const genMax = d3.max(activeDataLine, d => d['GENERATION']);
-            // const genScale = d3.scaleLinear().domain([genMin, genMax]).range([genChartHeight, 40]);
-
-        
+ 
 
             //x scale
             var typeScale = d3.scaleBand()
@@ -600,9 +591,9 @@ const geoData = async () => {
                 .call(typeAxis).selectAll(".tick").each(function (data) {
 
 
-                     var tick = d3.select(this);
-                     var string = tick.attr("transform");
-                     var translate = string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",");
+                     let tick = d3.select(this);
+                     let string = tick.attr("transform");
+                     let translate = string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",");
                    
 
                     typeTickArray.push(Number(translate[0])-10);
@@ -629,7 +620,7 @@ const geoData = async () => {
                 .attr("transform", "rotate(-90)")
                 .text("Generation(MWh)");
 
-            //bar
+            
 
 
 
@@ -675,7 +666,7 @@ const geoData = async () => {
             const monthMin = d3.min(activeDataLine, d => d['MONTH']);
             const monthMax = d3.max(activeDataLine, d => d['MONTH']);
             const monthScale = d3.scaleLinear().domain([monthMin, monthMax]).range([0, genChartWidth - 50]);
-
+         
     
        
 
@@ -698,8 +689,13 @@ const geoData = async () => {
                 .attr("transform", "translate(" + (margin.left) + "," + 0 + ")")
                 .call(genAxis);
 
+            //Make x axis tick values as month names
+            var monthsAbb = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"]
+            var monthAxis = d3.axisBottom(monthScale)
+            .tickValues([1,2,3,4,5,6,7,8,9,10,11,12])
+            .tickFormat(function(d,i){ return monthsAbb[i] });
+        
             // Create x axis and get array of x pixel locations of the month ticks
-            var monthAxis = d3.axisBottom(monthScale);
             var monthTickArray = [];
             svgGen.append("g")
                 .attr("class", "bottom axis")
@@ -707,15 +703,15 @@ const geoData = async () => {
                 .call(monthAxis).selectAll(".tick").each(function (data) {
 
 
-                     var tick = d3.select(this);
-                     var string = tick.attr("transform");
-                     var translate = string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",");
-                   
+                     let tick = d3.select(this);
+                     let string = tick.attr("transform");
+                     let translate = string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",");
+              
 
                     monthTickArray.push(Number(translate[0]) + 80);
                 });
 
-          //  console.log(monthTickArray);
+     
 
             // x label
             svgGen.append("text")
@@ -739,7 +735,6 @@ const geoData = async () => {
 
             
             //Create and draw curved line that shows energy generated
-
             var line = d3.line()
                 .x(function (d, i) {
                     return monthScale(i) + xAxisOffsetLine;
